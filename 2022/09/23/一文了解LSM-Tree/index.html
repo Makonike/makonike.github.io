@@ -9,7 +9,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://pic.anyview.fun/pic/97758625_p0.png">
 <meta property="article:published_time" content="2022-09-23T13:55:41.000Z">
-<meta property="article:modified_time" content="2022-09-24T11:44:21.789Z">
+<meta property="article:modified_time" content="2022-09-26T17:24:48.778Z">
 <meta property="article:author" content="谈笑风生间">
 <meta property="article:tag" content="数据结构">
 <meta property="article:tag" content="存储">
@@ -56,7 +56,7 @@
   isHome: false,
   isHighlightShrink: false,
   isToc: true,
-  postUpdate: '2022-09-24 19:44:21'
+  postUpdate: '2022-09-27 01:24:48'
 }</script><noscript><style type="text/css">
   #nav {
     opacity: 1
@@ -145,7 +145,7 @@
       }
     }
     detectApple()
-    })(window)</script><link rel="stylesheet" href="//at.alicdn.com/t/font_8d5l8fzk5b87iudi.css"><meta name="generator" content="Hexo 5.4.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://pic.anyview.fun/pic/421f502adbb4bf2829ba8007802a5b2.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">5</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">7</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://pic.anyview.fun/pic/97758625_p0.png')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">谈笑风生间的博客</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">一文了解LSM-Tree</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-09-23T13:55:41.000Z" title="发表于 2022-09-23 21:55:41">2022-09-23</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-09-24T11:44:21.789Z" title="更新于 2022-09-24 19:44:21">2022-09-24</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%AD%A6%E4%B9%A0%E6%97%A5%E5%BF%97/">学习日志</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E4%B8%80%E6%96%87%E7%B3%BB%E5%88%97/">一文系列</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">5.4k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>17分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="一文了解LSM-Tree"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">评论数:</span><a href="/2022/09/23/%E4%B8%80%E6%96%87%E4%BA%86%E8%A7%A3LSM-Tree/#post-comment" itemprop="discussionUrl"><span class="valine-comment-count" data-xid="/2022/09/23/%E4%B8%80%E6%96%87%E4%BA%86%E8%A7%A3LSM-Tree/" itemprop="commentCount"><i class="fa-solid fa-spinner fa-spin"></i></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="什么是LSM-Tree"><a href="#什么是LSM-Tree" class="headerlink" title="什么是LSM-Tree"></a>什么是LSM-Tree</h1><h2 id="SSTables的结构"><a href="#SSTables的结构" class="headerlink" title="SSTables的结构"></a>SSTables的结构</h2><p>想要了解LSM-Tree（Log Structured Merge Tree，日志结构合并树），我们得先了解SSTables。SSTables即<strong>排序字符串表</strong>（Sorted String Table），也是LSM-Tree里的核心数据结构。它的概念来自Google的Bigtable论文，大概的意思就是，SSTable是一种<strong>可持久化，有序且不可变</strong>的<strong>键值</strong>存储结构，key和value都可以是任意的字节数组，并且给提供了按照指定key查找和指定范围的key区间迭代遍历功能。</p>
+    })(window)</script><link rel="stylesheet" href="//at.alicdn.com/t/font_8d5l8fzk5b87iudi.css"><meta name="generator" content="Hexo 5.4.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://pic.anyview.fun/pic/421f502adbb4bf2829ba8007802a5b2.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">5</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">7</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://pic.anyview.fun/pic/97758625_p0.png')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">谈笑风生间的博客</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">一文了解LSM-Tree</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-09-23T13:55:41.000Z" title="发表于 2022-09-23 21:55:41">2022-09-23</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-09-26T17:24:48.778Z" title="更新于 2022-09-27 01:24:48">2022-09-27</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E4%B8%80%E6%96%87%E7%B3%BB%E5%88%97/">一文系列</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%AD%A6%E4%B9%A0%E6%97%A5%E5%BF%97/">学习日志</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">5.4k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>17分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="一文了解LSM-Tree"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">评论数:</span><a href="/2022/09/23/%E4%B8%80%E6%96%87%E4%BA%86%E8%A7%A3LSM-Tree/#post-comment" itemprop="discussionUrl"><span class="valine-comment-count" data-xid="/2022/09/23/%E4%B8%80%E6%96%87%E4%BA%86%E8%A7%A3LSM-Tree/" itemprop="commentCount"><i class="fa-solid fa-spinner fa-spin"></i></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="什么是LSM-Tree"><a href="#什么是LSM-Tree" class="headerlink" title="什么是LSM-Tree"></a>什么是LSM-Tree</h1><h2 id="SSTables的结构"><a href="#SSTables的结构" class="headerlink" title="SSTables的结构"></a>SSTables的结构</h2><p>想要了解LSM-Tree（Log Structured Merge Tree，日志结构合并树），我们得先了解SSTables。SSTables即<strong>排序字符串表</strong>（Sorted String Table），也是LSM-Tree里的核心数据结构。它的概念来自Google的Bigtable论文，大概的意思就是，SSTable是一种<strong>可持久化，有序且不可变</strong>的<strong>键值</strong>存储结构，key和value都可以是任意的字节数组，并且给提供了按照指定key查找和指定范围的key区间迭代遍历功能。</p>
 <p>如下图所示，该图表示一个个日志结构存储数据段文件：为了避免最终用完磁盘空间，才将日志分为特定大小的段，对旧段文件进行压缩和合并，在新的日志文件中<strong>只保留每个键的最近更新</strong>。这种情况下，由于旧段的内容不会被修改，<strong>因此合并的段可以放入一个新的文件</strong>，旧段的合并和压缩都可以在后台线程完成，请求时仍然使用旧段处理，而完成合并后，就能直接删除旧段，使用新的合并段。</p>
 <p><img src="https://pic.anyview.fun/blog/LSM-Tree/image%20%286%29.png" alt="img"></p>
 <p>日志中稍后的值优先于日志中较早的相同键的值</p>
@@ -176,7 +176,7 @@
 <ul>
 <li><p>顺序写入<strong>速度</strong>比随机写入<strong>快</strong>得多：追加和分段合并是顺序写入的操作，通常比随机写入快得多。某种程度上顺序写入在基于闪存的固态硬盘（SSD）上也是优选</p>
 <ul>
-<li>当然，较于随机写的B树，LSM树的写入速度会更快，而B树的读取速度更快，LSM树的读取速度比较慢。</li>
+<li>当然，较于随机写的B-Tree，LSM-Tree的写入速度会更快，而B-Tree的读取速度更快，LSM-Tree的读取速度比较慢。</li>
 </ul>
 </li>
 <li><p><strong>易于处理<strong><strong>并发</strong></strong>和崩溃恢复</strong>：段文件（SSTable）是附加的或不可变的，不必担心在覆盖值的时候发生崩溃情况导致将包含旧值和一部分新值保留在一起</p>
@@ -189,7 +189,7 @@
 </ul>
 </blockquote>
 <p><img src="https://pic.anyview.fun/blog/LSM-Tree/image%20%2811%29.png" alt="img"></p>
-<p>LSM-Tree一般由两个或两个以上存储数据的结构组成，这些存储数据的结构也被称为组件（一般是多组件，只有C0在内存中，其余都在磁盘中），这里举个最简单的只有俩组件的例子，<strong>一个称为C0树，常驻内存中，可以是任何方便键值查找的数据结构</strong>，如AVL等结构，<strong>另一个称为C1树，常驻硬盘中，结构与B-Tree相似。</strong>C1在初始时为空，<strong>当内存C0的大小到一定程度</strong>的时候就要进行<strong>rolling merge</strong>，C0会将部分内容dump到C1中，将数据从小到大（从左到右）依次追加写到C1的一个multi-page block叶节点buffer中，如果buffer满了就将其写到硬盘，以此类推，直到C0扫描到最右，<strong>C1首次产生</strong>。当然，<strong>C0并不将所有的条目都拿来rolling merge，</strong> 由于C0存储在内存之中，所以C0可以保留最近插入或最常访问的那些数据，以提高访问速率并降低I/O操作的次数，<strong>C1中经常被访问的结点也将会被缓存在C0中</strong>。</p>
+<p>LSM-Tree一般由两个或两个以上存储数据的结构组成，这些存储数据的结构也被称为组件（一般是多组件，只有C0在内存中，其余都在磁盘中），这里举个最简单的只有俩组件的例子，<strong>一个称为C0-Tree，常驻内存中，可以是任何方便键值查找的数据结构</strong>，如AVL等结构，<strong>另一个称为C1-Tree，常驻硬盘中，结构与B-Tree相似。</strong>C1在初始时为空，<strong>当内存C0的大小到一定程度</strong>的时候就要进行<strong>rolling merge</strong>，C0会将部分内容dump到C1中，将数据从小到大（从左到右）依次追加写到C1的一个multi-page block叶节点buffer中，如果buffer满了就将其写到硬盘，以此类推，直到C0扫描到最右，<strong>C1首次产生</strong>。当然，<strong>C0并不将所有的条目都拿来rolling merge，</strong> 由于C0存储在内存之中，所以C0可以保留最近插入或最常访问的那些数据，以提高访问速率并降低I/O操作的次数，<strong>C1中经常被访问的结点也将会被缓存在C0中</strong>。</p>
 <blockquote>
 <p>LSM在merge的时候如何把即将merge的数据定位到C1已经写入磁盘中的数据？</p>
 <ul>
@@ -207,15 +207,15 @@
 </ul>
 <blockquote>
 <ul>
-<li><p>rolling merge：可以想象为拥有一个概念上的游标，在C0和C1树的等值k-v之间缓慢穿梭移动，将C0索引数据取出放在C1树上</p>
+<li><p>rolling merge：可以想象为拥有一个概念上的游标，在C0和C1-Tree的等值k-v之间缓慢穿梭移动，将C0索引数据取出放在C1-Tree上</p>
 <ul>
-<li>当增长的C0树第一次到阙值</li>
-<li>最靠左的一系列条目会以高效批量形式从C0树中删除</li>
-<li>然后被按key递增顺序重组到C1树，C1树会被完全填满</li>
-<li><strong>连续的C1树的叶节点会按从左到右顺序，首先放置到常驻内存的multi-page block内的若干初始页上</strong></li>
+<li>当增长的C0-Tree第一次到阙值</li>
+<li>最靠左的一系列条目会以高效批量形式从C0-Tree中删除</li>
+<li>然后被按key递增顺序重组到C1-Tree，C1-Tree会被完全填满</li>
+<li><strong>连续的C1-Tree的叶节点会按从左到右顺序，首先放置到常驻内存的multi-page block内的若干初始页上</strong></li>
 <li>直到该multi-page block被填满</li>
-<li><strong>该multi-page block被刷盘，称为C1树叶节点层的第一部分，直接常驻硬盘</strong></li>
-<li>随着连续的叶节点不断添加的过程，<strong>C1树的目录节点会在内存缓存中被创建</strong>（为了高效利用内存和硬盘，这些上层目录节点会被存放在单独的页（或multi-page block）缓存中，还有分<strong>隔点索引M，将访问精确匹配导向某个下一层级的单页节点</strong>而不是multi-page block。因此可以在rolling merge中使用multi-page block，索引精确匹配时访问单页节点）</li>
+<li><strong>该multi-page block被刷盘，称为C1-Tree叶节点层的第一部分，直接常驻硬盘</strong></li>
+<li>随着连续的叶节点不断添加的过程，<strong>C1-Tree的目录节点会在内存缓存中被创建</strong>（为了高效利用内存和硬盘，这些上层目录节点会被存放在单独的页（或multi-page block）缓存中，还有分<strong>隔点索引M，将访问精确匹配导向某个下一层级的单页节点</strong>而不是multi-page block。因此可以在rolling merge中使用multi-page block，索引精确匹配时访问单页节点）</li>
 </ul>
 </li>
 <li><p>multi-page block：不同于B-Tree，LSM-Tree的延时写(数据可以积攒)可以有效的利用multi-page block，在rolling merge的过程中，一次从C1中读出多个连续pages，与C0进行merge，然后一次向C1写回这些连续pages，这样有效<strong>利用单次<strong><strong>I/O</strong></strong>完成多个pages的读写</strong>（B-Tree在此场景下无法利用multi-page的优势）</p>
@@ -262,11 +262,11 @@
 </ul>
 <p>当然，BigTable paper中有提到了几种优化方案</p>
 <ol>
-<li><p><strong>压缩</strong>（Compression）：将多个SSTable合并为一个SStable，删除旧数据或标记为已删除的数据，降低空间放大，同时，减少SSTable，降低读放大。</p>
+<li><p><strong>压缩</strong>（Compression）：将多个SSTable合并为一个SSTable，删除旧数据或标记为已删除的数据，降低空间放大，同时，减少SSTable，降低读放大。</p>
 </li>
 <li><p><strong>布隆过滤器</strong>（BloomFilter）：可以快速确定数据在不在SSTable中，避免了数据不存在时，遍历SSTable读取数据block内容带来的开销</p>
 </li>
-<li><p>缓存（Cache）：因为SSTable不变，因此适合缓存到内存中，这样热点数据不需要访问磁盘（C0树其实是有缓存的）</p>
+<li><p>缓存（Cache）：因为SSTable不变，因此适合缓存到内存中，这样热点数据不需要访问磁盘（C0-Tree其实是有缓存的）</p>
 </li>
 <li><p><strong>合理的压缩策略</strong>：确定SSTables如何被压缩和合并的顺序和时间，常见的有<strong>大小分层</strong>（HBase），<strong>平坦压缩</strong>（LevelDB），混合压缩（RocksDB），先进先出等等</p>
 <ul>
@@ -288,14 +288,14 @@
 <ul>
 <li>更新</li>
 </ul>
-<p>更新即插入，在读取时总是从C0-Tree到Level0的SSTable再到更老的SSTable，总是能读取到最新值</p>
+<p>更新即插入，在读取时总是从C0-Tree到Level0的SSTable到更老的SSTable，总是能读取到最新值</p>
 <ul>
 <li>删除</li>
 </ul>
 <p>为了更高效地利用LSM-tree的插入优势，<strong>删除操作被设计为通过插入操作来执行</strong>。当要删除一个条目时，先在C0上找对应的索引是否存在，如果不在就建一个索引，在索引键值上设置删除条目，通知所有访问该索引的操作该条目已删除。后续滚动合并中，在较大CxTree中碰到与该索引键值相同的条目都将被删除。在C0查找该条目时，碰到该删除条目，会直接返回未找到。如果C0上找到该索引存在，则直接将删除条目覆盖该索引</p>
 <h1 id="崩溃恢复"><a href="#崩溃恢复" class="headerlink" title="崩溃恢复"></a>崩溃恢复</h1><p>在此之前，我们需要理解两个概念：<code>empty block</code>与<code>filling block</code></p>
 <ul>
-<li><strong>empty block</strong>：指那些在合并前已缓存、且包含旧的C1树节点的<code>multi-page block</code>，它们会被清空和移除</li>
+<li><strong>empty block</strong>：指那些在合并前已缓存、且包含旧的C1-Tree节点的<code>multi-page block</code>，它们会被清空和移除</li>
 <li><strong>filling block</strong>：新的叶节点被写入与旧的<code>multi-page block</code>不同的已缓存的<code>multi-page block</code>，它们会被填满。填满后该<code>multi-page block</code>就会被写到磁盘的一个新的空闲位置</li>
 </ul>
 <p>WAL中只需要记录数据插入的事务，即只包含<strong>被插入数据的行的号码</strong>以及<strong>插入的域</strong>和<strong>值</strong>。<strong>LSM-Tree在记日志时设置checkpoint来恢复某一时刻的LSM-Tree</strong>，创建检查点的步骤如下：</p>
