@@ -9,7 +9,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://dsvision.net/laf/oss/blog/yiwenliaojieos-neicunbuju/103199790_p0.png">
 <meta property="article:published_time" content="2022-12-29T07:10:26.000Z">
-<meta property="article:modified_time" content="2022-12-30T15:05:16.242Z">
+<meta property="article:modified_time" content="2022-12-30T15:50:54.091Z">
 <meta property="article:author" content="谈笑风生间">
 <meta property="article:tag" content="操作系统">
 <meta property="article:tag" content="内存">
@@ -56,7 +56,7 @@
   isHome: false,
   isHighlightShrink: false,
   isToc: true,
-  postUpdate: '2022-12-30 23:05:16'
+  postUpdate: '2022-12-30 23:50:54'
 }</script><noscript><style type="text/css">
   #nav {
     opacity: 1
@@ -145,7 +145,7 @@
       }
     }
     detectApple()
-    })(window)</script><link rel="stylesheet" href="//at.alicdn.com/t/font_8d5l8fzk5b87iudi.css"><!-- hexo injector head_end start --><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-filter-gitcalendar/lib/gitcalendar.css" media="print" onload="this.media='all'"><!-- hexo injector head_end end --><meta name="generator" content="Hexo 5.4.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://dsvision.net/laf/oss/blog/title/avatar1.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">9</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">10</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://dsvision.net/laf/oss/blog/yiwenliaojieos-neicunbuju/103199790_p0.png')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">谈笑风生间的博客</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">一文了解OS-内存布局</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-12-29T07:10:26.000Z" title="发表于 2022-12-29 15:10:26">2022-12-29</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-12-30T15:05:16.242Z" title="更新于 2022-12-30 23:05:16">2022-12-30</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E4%B8%80%E6%96%87%E7%B3%BB%E5%88%97/">一文系列</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%AD%A6%E4%B9%A0%E6%97%A5%E5%BF%97/">学习日志</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">5.1k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>15分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="一文了解OS-内存布局"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">评论数:</span><a href="/2022/12/29/%E4%B8%80%E6%96%87%E4%BA%86%E8%A7%A3OS-%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80/#post-comment" itemprop="discussionUrl"><span class="valine-comment-count" data-xid="/2022/12/29/%E4%B8%80%E6%96%87%E4%BA%86%E8%A7%A3OS-%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80/" itemprop="commentCount"><i class="fa-solid fa-spinner fa-spin"></i></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="内存布局"><a href="#内存布局" class="headerlink" title="内存布局"></a>内存布局</h1><h2 id="揭开操作系统内存的面纱"><a href="#揭开操作系统内存的面纱" class="headerlink" title="揭开操作系统内存的面纱"></a>揭开操作系统内存的面纱</h2><p>众所周知，每个程序都有属于它自己的源程序，通过翻译、链接阶段可以得到它的ELF可执行目标文件。ELF可执行目标文件则是将这个程序的代码和数据按照一定的格式组织在这个文件中，其中包含了段头部表、ELF头、节头部表和若干的节（section）。在ELF文件中，会为这个文件的每一条指令和数据分配一段虚拟地址，在加载ELF文件时，按照虚拟地址的大小来组织就能得到一个虚拟地址空间的布局。</p>
+    })(window)</script><link rel="stylesheet" href="//at.alicdn.com/t/font_8d5l8fzk5b87iudi.css"><!-- hexo injector head_end start --><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-filter-gitcalendar/lib/gitcalendar.css" media="print" onload="this.media='all'"><!-- hexo injector head_end end --><meta name="generator" content="Hexo 5.4.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://dsvision.net/laf/oss/blog/title/avatar1.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">9</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">10</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://dsvision.net/laf/oss/blog/yiwenliaojieos-neicunbuju/103199790_p0.png')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">谈笑风生间的博客</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">一文了解OS-内存布局</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-12-29T07:10:26.000Z" title="发表于 2022-12-29 15:10:26">2022-12-29</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-12-30T15:50:54.091Z" title="更新于 2022-12-30 23:50:54">2022-12-30</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%AD%A6%E4%B9%A0%E6%97%A5%E5%BF%97/">学习日志</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E4%B8%80%E6%96%87%E7%B3%BB%E5%88%97/">一文系列</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">5.3k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>16分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="一文了解OS-内存布局"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">评论数:</span><a href="/2022/12/29/%E4%B8%80%E6%96%87%E4%BA%86%E8%A7%A3OS-%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80/#post-comment" itemprop="discussionUrl"><span class="valine-comment-count" data-xid="/2022/12/29/%E4%B8%80%E6%96%87%E4%BA%86%E8%A7%A3OS-%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80/" itemprop="commentCount"><i class="fa-solid fa-spinner fa-spin"></i></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="内存布局"><a href="#内存布局" class="headerlink" title="内存布局"></a>内存布局</h1><h2 id="揭开操作系统内存的面纱"><a href="#揭开操作系统内存的面纱" class="headerlink" title="揭开操作系统内存的面纱"></a>揭开操作系统内存的面纱</h2><p>众所周知，每个程序都有属于它自己的源程序，通过翻译、链接阶段可以得到它的ELF可执行目标文件。ELF可执行目标文件则是将这个程序的代码和数据按照一定的格式组织在这个文件中，其中包含了段头部表、ELF头、节头部表和若干的节（section）。在ELF文件中，会为这个文件的每一条指令和数据分配一段虚拟地址，在加载ELF文件时，按照虚拟地址的大小来组织就能得到一个虚拟地址空间的布局。</p>
 <p><img src="https://dsvision.net/laf/oss/blog/yiwenliaojieos-neicunbuju/img1.png"></p>
 <p>当存在多个程序时，由于它们的<strong>ELF可执行目标文件里的虚拟地址都是一样的</strong>，因此它们自己的虚拟地址空间的范围都是从0到虚拟内存的最大值，这便是虚拟内存的作用之一，<strong>隔离程序内存</strong>。不同的是它们的指令和代码都不一样，因此对于一模一样的虚拟地址空间而言，其使用情况不一样。当程序运行时，只需要将ELF可执行目标文件加载到物理内存中，此时只需要加载使用到的指令和数据（按需加载），因此<strong>尽管物理内存不大，操作系统却可以在内存中同时维护着多个程序</strong>。对于物理内存地址和虚拟内存地址的映射维护，则交由页表来管理。</p>
 <p>总而言之，<strong>虚拟内存其实是不可见的</strong>，虚拟内存中的虚拟地址只是一个存在于物理内存上的值，通过页表映射到实际使用的物理内存中，为程序分配虚拟地址时只是赋予其虚拟地址的值而已，<strong>并没有真正为程序分配（物理）内存</strong>。在页表初始化的时候，虚拟地址对应到的物理页号都是不知道的，此时页表中的有效位都为0。当要访问一段虚拟内存地址时，那么需要将该虚拟地址压入eax寄存器，CPU去TLB中查找，发现没有，再去页表中查找，如果页表中对应项没有物理页号，则会产生缺页异常，然后通过调用缺页异常处理程序获取一个空闲的物理页，分配给需要访问的虚拟页对应的页号。然后，CPU会再次执行一次指令，这次指令的执行就能够正确访问到对应的物理内存了。</p>
@@ -162,54 +162,52 @@
 <h3 id="用户态虚拟内存布局"><a href="#用户态虚拟内存布局" class="headerlink" title="用户态虚拟内存布局"></a>用户态虚拟内存布局</h3><p>由于32位与64位用户态虚拟内存布局类似，以下则不分32位与64位讨论。</p>
 <p>用户态虚拟地址空间存储的内容从高地址到低地址大致有如下几点：</p>
 <ol>
-<li><p>栈：动态，高地址往低地址增长。rsp是指向栈顶的指针，存储在RSP寄存器中</p>
+<li>栈：动态，高地址往低地址增长。rsp是指向栈顶的指针，存储在RSP寄存器中</li>
+</ol>
 <blockquote>
 <p>栈为什么要由高地址向低地址扩展？</p>
+</blockquote>
 <ul>
-<li>为了避免栈空间和代码段冲突，最大利用地址空间</li>
+<li>为了避免栈空间和代码段冲突，防止缓冲区溢出</li>
 <li>便于确定栈空间的起始地址</li>
 <li>可以使堆和栈能够充分利用空闲的地址空间。有些程序用堆多，有些用栈多，很难确定栈和堆的分界线</li>
-<li>历史原因</li>
+<li>历史原因：在没有MMU的时代，为了最大的利用内存空间，堆和栈被设计为从两端相向生长。那么哪一个向上，哪一个向下呢？人们对数据访问是习惯于向上的，比如你在堆中new一个数组，是习惯于把低元素放到低地址，把高位放到高地址，所以堆 向上生长比较符合习惯,  而栈则对方向不敏感，一般对栈的操作只有PUSH和pop，无所谓向上向下，所以就把堆放在了低端，把栈放在了高端. 但现在已经习惯这样了。这个和处理器设计有关系，目前大多数主流处理器都是这样设计，但ARM 同时支持这两种增长方式。</li>
 </ul>
-</blockquote>
-</li>
-<li><p>mmap内存映射区：从高地址往低地址增长。mmap_base指针指向了内存映射区的基地址</p>
+<ol start="2">
+<li>mmap内存映射区：从高地址往低地址增长。mmap_base指针指向了内存映射区的基地址</li>
+</ol>
 <blockquote>
 <p>为什么从高地址往低地址增长？</p>
+</blockquote>
 <ul>
 <li>32位用户态只有3GB，从低地址往高地址增长的话，堆用的内存空间可能就只有很少一部分，但是对栈来说，栈一般占的都很少，一般固定栈大小为10MB，基本够用了，如果栈有界，可以在栈末尾端安置内存映射区，就能从高地址往低地址增长了</li>
 <li>对于64位来说，往哪边增长都一样，两种内存布局都存在。反正空间大小足够</li>
 <li>关于内存映射区，可以移步博文<a target="_blank" rel="noopener" href="https://anyview.fun/2022/08/22/%E4%B8%80%E6%96%87%E4%BA%86%E8%A7%A3os-%E5%86%85%E5%AD%98%E6%98%A0%E5%B0%84/">一文了解os-内存映射</a>了解</li>
 </ul>
-</blockquote>
-</li>
-<li><p>运行时堆(heap)：动态，低地址往高地址增长</p>
-</li>
-<li><p>未初始化数据(.bss)</p>
-</li>
-<li><p>已初始化数据(.data)</p>
-</li>
-<li><p>代码(.text) ：每一个指令，每一个符号</p>
-</li>
+<ol start="3">
+<li>运行时堆(heap)：动态，低地址往高地址增长</li>
+<li>未初始化数据(.bss)：存储未初始化的全局和静态变量</li>
+<li>已初始化数据(.data)：已初始化的全局和静态变量</li>
+<li>代码(.text) ：存储存储已编译好的机器代码，每一个指令，每一个符号</li>
 </ol>
 <p><img src="https://dsvision.net/laf/oss/blog/yiwenliaojieos-neicunbuju/img4.png"></p>
-<h3 id="内核态虚拟内存布局"><a href="#内核态虚拟内存布局" class="headerlink" title="内核态虚拟内存布局"></a>内核态虚拟内存布局</h3><p>与用户态不同，在32位系统与64位系统的局部差别就比较大，主要因为32位内核态空间太小了，因此后文会区分32位与64位，分开讨论。</p>
+<h3 id="内核态虚拟内存布局"><a href="#内核态虚拟内存布局" class="headerlink" title="内核态虚拟内存布局"></a>内核态虚拟内存布局</h3><p>与用户态不同，在32位系统与64位系统的<strong>局部差别就比较大</strong>，主要因为<strong>32位内核态空间太小了</strong>，因此后文会区分32位与64位，分开讨论。</p>
 <p>在32位系统下，我们知道内核态占了1GB，用户态占了3GB，中间通过PAGE_OFFSET（TASK_SIZE）分隔开。</p>
-<p>内核态的前896M是直接映射区，用于存放内核代码、数据和程序相关的数据结构，比如页表、用户态的虚拟地址空间结构mm_struct、vm_area_struct等。接下来是vmalloc区，用于内核映射，申请不连续的物理内存（堆内存），使用vmalloc()申请，从VMALLOC_START（低地址）到VMALLOC_END（高地址）。在vmalloc区域与直接直接映射区之间有个8M的安全区，用于捕获对内存的越界访问。基本每两个相邻的区之间都会有。再接下来是持久映射区，从KMAP_BASE（低地址）到FIXADDR_START，用于内核永久内存映射。然后是固定映射区，用于内核永久映射，到0XFFFF FFFF。</p>
+<p>内核态的<strong>前896M是直接映射区</strong>，用于存放内核代码、数据和程序相关的数据结构，比如页表、用户态的虚拟地址空间结构mm_struct、vm_area_struct等。接下来是vmalloc区，用于内核映射，申请不连续的物理内存（堆内存），使用vmalloc()申请，从VMALLOC_START（低地址）到VMALLOC_END（高地址）。在vmalloc区域与直接直接映射区之间有个8M的安全区，用于捕获对内存的越界访问。基本每两个相邻的区之间都会有。再接下来是持久映射区，从KMAP_BASE（低地址）到FIXADDR_START，用于内核永久内存映射。然后是固定映射区，用于内核临时映射，到0XFFFF FFFF。</p>
 <p><img src="https://dsvision.net/laf/oss/blog/yiwenliaojieos-neicunbuju/img5.png"></p>
-<p>直接映射区的命名由来是该区域与物理内存之间只是简单的直接映射关系，该区域对应的物理内存区域是从0地址到896M的区域，虚拟地址只用减去特定偏移即可获取到对应的物理地址，比如我获取到直接映射区的一个虚拟地址，只需要简单的计算，如减去PAGE_OFFSET，即可得到对应的物理地址。那么内核访问直接映射区也需要经过地址转换吗？答案显而易见，内核程序只能服从于硬件要求。</p>
+<p>直接映射区的命名由来是该区域与物理内存之间只是<strong>简单的直接映射关系</strong>，该区域对应的物理内存区域是从0地址到896M的区域，虚拟地址只用减去特定偏移即可获取到对应的物理地址，比如我获取到直接映射区的一个虚拟地址，只需要简单的计算，如减去PAGE_OFFSET，即可得到对应的物理地址。那么内核访问直接映射区也需要经过地址转换吗？答案显而易见，内核程序只能服从于硬件要求。</p>
 <p><img src="https://dsvision.net/laf/oss/blog/yiwenliaojieos-neicunbuju/img6.png"></p>
-<p>下面我们来了解一下高端内存这个概念，它是32位系统有，而64位系统没有的。高端内存标识直接映射区高地址邻接点（虚拟内存没有这个），分布在896M以上的物理内存区域，是只属于物理内存的概念。用户态的内存可以直接映射到高端内存上，但是没法访问直接映射区（前896M），但是内核态的内存却可以访问所有的高端内存。由于直接映射区已经映射了内核态虚拟空间的896M，内核态的虚拟地址只剩下120M了，内核态该如何访问所有的高端内存？</p>
+<p>下面我们来了解一下高端内存这个概念，它是32位系统有，而64位系统没有的。<strong>高端内存是直接映射区高地址邻接点以上的区域，即分布在896M以上的物理内存区域</strong>，是只属于物理内存的概念。用户态的内存可以直接映射到高端内存上，但是没法访问直接映射区（前896M），但是内核态的内存却可以访问所有的物理内存。由于直接映射区已经映射了内核态虚拟空间的896M，内核态的虚拟地址只剩下120M了，内核态该如何访问所有的高端内存？</p>
 <p><img src="https://dsvision.net/laf/oss/blog/yiwenliaojieos-neicunbuju/img7.png"></p>
 <p>如果是正常映射的话只能映射到高端内存的120M，我们可以使用持久映射、固定（临时）映射、vmalloc。</p>
 <ul>
 <li>固定映射：<ul>
-<li>拿120M的一部分做映射，要哪块的时候就建立映射，要访问其他的时候就删除映射，映射另一块区域（相同虚拟地址段在不同时刻映射不同的物理内存区域）</li>
-<li>对于固定映射而言，将这个区域划分为若干固定的映射区域，每个映射区域映射不同的物理内存区域，用完了直接删除映射关系即可。可以用kmap_atomic()</li>
+<li>拿120M的一部分做映射，<strong>要哪块的时候就建立映射，要访问其他的时候就删除映射</strong>，映射另一块区域（相同虚拟地址段在不同时刻映射不同的物理内存区域）</li>
+<li>对于固定映射而言，<strong>将这个区域划分为若干固定的映射区域，每个映射区域映射不同的物理内存区域</strong>，用完了直接删除映射关系即可。可以用kmap_atomic()</li>
 </ul>
 </li>
 <li>持久映射：<ul>
-<li>与固定映射不同的是，这个区域创建的映射区域大小不固定。可以通过kmap()</li>
+<li>与固定映射不同的是，这个区域<strong>创建的映射区域大小不固定</strong>。可以通过kmap()</li>
 <li>临时映射比持久映射的实现要简单，临时映射运行也快，适用于中断处理程序。但是临时映射的窗口很少（固定分了几块而已）</li>
 </ul>
 </li>
@@ -221,12 +219,12 @@
 <p>以下是物理内存的映射情况，可以看到内核态虚拟内存足够大，甚至有能力直接映射整个物理内存，所以说64位系统不需要高端内存。</p>
 <p><img src="https://dsvision.net/laf/oss/blog/yiwenliaojieos-neicunbuju/img10.png"></p>
 <h2 id="物理内存模型"><a href="#物理内存模型" class="headerlink" title="物理内存模型"></a>物理内存模型</h2><p>总共分为平坦、不连续、稀疏内存模型三种。</p>
-<p>我们首先要知道如何去衡量CPU性能，显而易见的是响应一条指令的时间以及执行指令的吞吐量。如果我们要提高计算机的性能，从纵向看，我们能够提高单个CPU的主频，但是CPU的主频提高受到硬件制约，发展到如今，CPU的主频已经非常高了，如果再提高，可能成本也会有大幅上升。从横向看，我们可以增加CPU的个数，这样可以并行执行指令，以提高吞吐量。</p>
-<p>当一台计算机内有多个CPU时，该怎么去协调CPU访问内存呢？在一致内存访问UMA（Uniform Memory Access）的方式下，多个CPU会与多个内存共享一条总线，CPU将多个内存看成一个内存来使用，每个CPU访问主存是一样块的，但是由于是共享总线，需要检测总线是否忙碌，确定非忙碌后才让总线传输数据。这种系统完全受到总线带宽的限制。</p>
+<p>我们首先要知道如何去衡量CPU性能，显而易见的是<strong>响应一条指令的时间</strong>以及<strong>执行指令的吞吐量</strong>。如果我们要提高计算机的性能，从纵向看，我们能够提高单个CPU的主频，但是CPU的主频提高受到硬件制约，发展到如今，CPU的主频已经非常高了，如果再提高，可能成本也会有大幅上升。从横向看，我们可以增加CPU的个数，这样可以并行执行指令，以提高吞吐量。</p>
+<p>当一台计算机内有多个CPU时，该怎么去协调CPU访问内存呢？在一致内存访问UMA（Uniform Memory Access）的方式下，多个CPU会与多个内存共享一条总线，CPU将多个内存看成一个内存来使用，每个CPU访问主存是一样块的，但是由于是共享总线，需要检测总线是否忙碌，确定非忙碌后才让总线传输数据。这种系统完全<strong>受到总线带宽的限制</strong>。</p>
 <p>为了改善UMA，我们可以为每个CPU分配一块高速缓存，许多操作通过高速缓存就能完成，而不需要去访问数据总线，减少了总线流量，使得UMA能支持更多的CPU。</p>
 <p>如果CPU核数超过100，那最好使用非一致内存访问NUMA（Non-uniform Memory Access）架构的系统。在NUMA中，每个CPU都有自己独立的主存，每个CPU除了访问自己的主存，还能通过总线访问其它CPU的主存，当然，比起访问自己的主存，通过总线去访问其它CPU的主存肯定是要慢很多的。NUMA将每个独立的主存抽象为node，很显然，NUMA有多个node，而UMA架构下只有一个node。</p>
 <p>UMA与NUMA都是对称多处理技术SMP（Symmetrical Multi-Processing）的具体实现。</p>
-<h3 id="物理内存抽象"><a href="#物理内存抽象" class="headerlink" title="物理内存抽象"></a>物理内存抽象</h3><p>假设一个节点里物理内存有4G，一个物理页4K，页被抽象为一个结构体page，用于管理对应的物理页（物理页和page实例不是一个东西，每个物理页4k，但是每个page实例却不一定是4k，得看结构体属性来决定。</p>
+<h3 id="物理内存抽象"><a href="#物理内存抽象" class="headerlink" title="物理内存抽象"></a>物理内存抽象</h3><p>假设一个节点里物理内存有4G，一个物理页4K，页被抽象为一个结构体page，用于管理对应的物理页（物理页和page实例不是一个东西，每个物理页4k，但是每个page实例却不一定是4k，得看结构体属性来决定）</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">page</span>&#123;</span></span><br><span class="line">  <span class="keyword">unsigned</span> <span class="keyword">long</span> flags;</span><br><span class="line">  <span class="comment">// 用于描述页框的状态</span></span><br><span class="line">  <span class="keyword">atomic_t</span> _count;</span><br><span class="line">  <span class="comment">// -1表示页框空闲 &gt;=0表示已分配</span></span><br><span class="line">  <span class="keyword">atomic_t</span> _mapcount;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>如果把物理内存看成一个page组成的数组，<code>struct page mem_map[1048576]</code>.数组占用多大空间取决于每个page实例占用多大空间，32位下一般每个page占32字节，64位占64字节，取决于page结构体中的属性的大小。</p>
 <blockquote>
@@ -241,13 +239,13 @@
 <p>那么怎么知道这个page是映射到哪个物理页号呢，是哪个物理页的抽象？</p>
 </blockquote>
 <p>page实例是直接映射的，计算page在mem_map的索引即可，物理页号=(page - mem_map) / 32，page数组的索引就是页帧号，32是page实例的大小。转换的函数是page_to_pfn()。还提供了另一个方法，根据一个物理页号，找到某一个对应的page实例：<code>pfn_to_page(): pfn*32 + mem_map</code>，其中32是page实例的大小。</p>
-<h3 id="平坦内存模型"><a href="#平坦内存模型" class="headerlink" title="平坦内存模型"></a>平坦内存模型</h3><p>平坦内存模型FLATMEM（flat memory model）是Linux最初提供的内存模型（自0.11版本就存在。它通过简单的线性映射将物理页与一个数组mem_map对应起来，简单而高效。但是如果存在内存空洞的话，会很浪费内存。)</p>
+<h3 id="平坦内存模型"><a href="#平坦内存模型" class="headerlink" title="平坦内存模型"></a>平坦内存模型</h3><p>平坦内存模型FLATMEM（flat memory model）是Linux最初提供的内存模型（自0.11版本就存在。它<strong>通过简单的线性映射将物理页与一个数组mem_map对应起来</strong>，简单而高效。但是<strong>如果存在内存空洞的话，会很浪费内存</strong>。)</p>
 <p><img src="https://dsvision.net/laf/oss/blog/yiwenliaojieos-neicunbuju/img11.png"></p>
 <blockquote>
 <p>什么是内存空洞？</p>
 </blockquote>
 <p>实际上物理内存中有些地址用不了，比如4G内有一部分的地址是空洞无法访问的，称为不连续内存。平坦内存模型中的mem_map是数组，在内存中是连续的，即使对应物理内存的物理页部分是空洞的，也仍然要在mem_map中占一个位置。其实空洞这部分是不需要管理的，不需要page实例去映射。<br>NUMA架构下就会出现内存空洞，它有多个节点组成，节点与节点之间的内存就有可能是不连续的。如果还是用平坦内存模型就很浪费。（当然，选用什么物理内存模型与是硬件是什么架构没什么关系）</p>
-<h3 id="不连续内存模型"><a href="#不连续内存模型" class="headerlink" title="不连续内存模型"></a>不连续内存模型</h3><p>NUMA架构下，每个节点之间的内存是有空洞的，但是每个节点内的内存是不存在空洞的。那么我们可以将每个节点的内存抽象为一个mem_map，然后使用一个mem_map_array来存储每个mem_map的起始地址。效率没那么高，需要多次转换。但是如果内存之间有空洞，可以降低内存占用。这个模型与NUMA耦合太紧，只适用于NUMA架构下（如果UMA架构下内存出现大量空洞也用不了），NUMA如果每个节点内的内存页出现大量空洞，也会出现浪费内存的情况。</p>
+<h3 id="不连续内存模型"><a href="#不连续内存模型" class="headerlink" title="不连续内存模型"></a>不连续内存模型</h3><p>NUMA架构下，每个节点之间的内存是有空洞的，但是每个节点内的内存是不存在空洞的。那么我们可以将每个节点的内存抽象为一个mem_map，然后使用一个mem_map_array来存储每个mem_map的起始地址。<strong>效率没那么高</strong>，需要多次转换。但是如果内存之间有空洞，可以降低内存占用。这个模型<strong>与NUMA耦合太紧</strong>，只适用于NUMA架构下（如果UMA架构下内存出现大量空洞也用不了），NUMA如果每个节点内的内存页出现大量空洞，也会出现浪费内存的情况。</p>
 <p>因此不连续内存模型只是一个过渡用的中间产物，最终被稀疏内存模型替代。</p>
 <p><img src="https://dsvision.net/laf/oss/blog/yiwenliaojieos-neicunbuju/img12.png"></p>
 <p>与平坦内存模型不同，不连续内存模型通过page实例获取物理页号要麻烦的多。</p>
@@ -264,7 +262,7 @@
 <li>根据nid拿到node以及对应的mem_map</li>
 <li>node.mem_map + pfn - node.start_pfn</li>
 </ol>
-<h3 id="稀疏内存模型"><a href="#稀疏内存模型" class="headerlink" title="稀疏内存模型"></a>稀疏内存模型</h3><p>稀疏内存模型将物理内存分为多个段(mem_section，多个mem_section存储在mem_section_map中)，每个段内有多个page实例，假设每个段大小为2^27 = 128MB。其实感觉和多级分页的设计差不多，如果对应上的段是空洞，则段指向None即可，节省空间。有可插拔的特性，与NUMA架构高度解耦。</p>
+<h3 id="稀疏内存模型"><a href="#稀疏内存模型" class="headerlink" title="稀疏内存模型"></a>稀疏内存模型</h3><p>稀疏内存模型将物理内存分为多个段(mem_section，多个mem_section存储在mem_section_map中)，每个段内有多个page实例，假设每个段大小为2^27 = 128MB。其实感觉和多级分页的设计差不多，<strong>如果对应上的段是空洞，则段指向None即可，节省空间</strong>。有可插拔的特性，与NUMA架构高度解耦。</p>
 <p>一个mem_section_map的数组需要存储在一个页帧中，大小为<code>SECTIONS_PER_ROOT=(PAGE_SIZE / sizeof(struct mem_section))</code>。</p>
 <p>根据page实例来计算页号看起来复杂，其实只是计算下标后在二维数组中查找而已，实现起来也另有技巧。</p>
 <p><code>page_to_pfn()</code>:</p>
