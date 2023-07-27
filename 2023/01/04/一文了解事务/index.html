@@ -7,7 +7,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://makonike-blog.oss-cn-guangzhou.aliyuncs.com/blog/yiwenliaojieshiwu/title.jpg">
 <meta property="article:published_time" content="2023-01-04T15:50:02.000Z">
-<meta property="article:modified_time" content="2023-03-30T16:51:17.108Z">
+<meta property="article:modified_time" content="2023-07-27T15:13:44.854Z">
 <meta property="article:author" content="谈笑风生间">
 <meta property="article:tag" content="数据库">
 <meta property="article:tag" content="DDIA">
@@ -59,7 +59,7 @@
   isHome: false,
   isHighlightShrink: false,
   isToc: true,
-  postUpdate: '2023-03-31 00:51:17'
+  postUpdate: '2023-07-27 23:13:44'
 }</script><noscript><style type="text/css">
   #nav {
     opacity: 1
@@ -163,7 +163,7 @@
       }
     }
     detectApple()
-    })(window)</script><link rel="stylesheet" href="//at.alicdn.com/t/font_8d5l8fzk5b87iudi.css"><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://makonike-blog.oss-cn-guangzhou.aliyuncs.com/blog/title/avatar1.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">20</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">32</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">5</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://makonike-blog.oss-cn-guangzhou.aliyuncs.com/blog/yiwenliaojieshiwu/title.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="谈笑风生间"><span class="site-name">谈笑风生间</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">一文了解事务</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-01-04T15:50:02.000Z" title="发表于 2023-01-04 23:50:02">2023-01-04</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-03-30T16:51:17.108Z" title="更新于 2023-03-31 00:51:17">2023-03-31</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%AD%A6%E4%B9%A0%E6%97%A5%E5%BF%97/">学习日志</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E4%B8%80%E6%96%87%E7%B3%BB%E5%88%97/">一文系列</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/">阅读笔记</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">13.7k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>41分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="一文了解事务"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="简化容错，不惧失败"><a href="#简化容错，不惧失败" class="headerlink" title="简化容错，不惧失败"></a>简化容错，不惧失败</h2><p>在实际的生产环境中，分布式数据系统面临着命运的裁决，诸多不幸随时可能发生：</p>
+    })(window)</script><link rel="stylesheet" href="//at.alicdn.com/t/font_8d5l8fzk5b87iudi.css"><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://makonike-blog.oss-cn-guangzhou.aliyuncs.com/blog/title/avatar1.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">20</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">32</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">5</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://makonike-blog.oss-cn-guangzhou.aliyuncs.com/blog/yiwenliaojieshiwu/title.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="谈笑风生间"><span class="site-name">谈笑风生间</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">一文了解事务</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-01-04T15:50:02.000Z" title="发表于 2023-01-04 23:50:02">2023-01-04</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-07-27T15:13:44.854Z" title="更新于 2023-07-27 23:13:44">2023-07-27</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E4%B8%80%E6%96%87%E7%B3%BB%E5%88%97/">一文系列</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%AD%A6%E4%B9%A0%E6%97%A5%E5%BF%97/">学习日志</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/">阅读笔记</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">13.7k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>41分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="一文了解事务"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="简化容错，不惧失败"><a href="#简化容错，不惧失败" class="headerlink" title="简化容错，不惧失败"></a>简化容错，不惧失败</h2><p>在实际的生产环境中，分布式数据系统面临着命运的裁决，诸多不幸随时可能发生：</p>
 <ul>
 <li>系统侧：数据库软件和硬件系统在任何时间都有可能会发生故障</li>
 <li>应用侧：应用程序在任意时刻都可能会崩溃</li>
@@ -210,12 +210,12 @@
 <p>ACID 的隔离性用于解决这种问题。隔离性的定义是指<strong>每个事务的执行都是互相隔离的，每个事务都认为自己是系统中唯一正在运行的事务</strong>。在传统教科书上，这种事务隔离形式被称为<strong>可串行化（Serializability）</strong>，即如果事务都串行执行，则任意时刻必然只有一个事务在执行，从而在根本上消除了可能存在的并发问题。用另一句话说，数据库的隔离性确保了<strong>多个事务并行执行的结果应当与这些事务串行执行（一个接一个）的结果是一样的</strong>。</p>
 <p>在实际生产中很少使用可串行化这么强的隔离性，因为它会带来性能损失。实际上隔离性强弱类似于一个光谱，数据库系统提供商一般会实现其中几个，用户可以根据业务情况在隔离性和性能间进行选择。后文我们会详细讨论除可串行化外的几种<strong>弱隔离级别</strong>。</p>
 <h4 id="持久性（Durability）"><a href="#持久性（Durability）" class="headerlink" title="持久性（Durability）"></a>持久性（Durability）</h4><p>数据库系统的目的是，提供一个安全的地方存储数据，而不用担心丢失。持久性保证了<strong>一旦事务提交，即使发生硬件故障或数据库崩溃，已经写入的任何数据都不会丢失</strong>。</p>
-<p>在单节点（单机）数据库中，持久性意味着<strong>以数据页</strong>（Page）或<strong>日志形式</strong>（WAL）写入了非易失性存储。在<strong>多副本</strong>（replication）数据库中，持久性意味着数据以及复制到了多数节点中。</p>
+<p>在单节点（单机）数据库中，持久性意味着<strong>以数据页</strong>（Page）或<strong>日志形式</strong>（WAL）写入了非易失性存储。在<strong>多副本</strong>（replication）数据库中，持久性意味着数据已经复制到了多数节点中。</p>
 <p>然而，完美的持久性是不存在的，它只能做到某种程度的保证：如果所有硬盘和所有副本备份同时被销毁，那显然没有任何数据库能救得了你，数据必然丢失。</p>
 <p>在现实世界中，存储涉及到的所有环节都不是完美的：</p>
 <ul>
 <li>写入磁盘后宕机，虽然数据没丢失，但是在机器修复或磁盘转移前，数据服务是不可用的。<strong>多副本冗余</strong>（Replication）系统可以解决这个问题。</li>
-<li>一个关联性的故障，如软件 bug 或者机房断电，可以同时摧毁一个机房中的所有副本，任何仅存储在内存中的数据都会丢失。因此内存数据库仍然定期持久化到外存。</li>
+<li>一个关联性的故障，如软件 bug 或者机房断电，可以同时摧毁一个机房中的所有副本，任何仅存储在内存中的数据都会丢失。因此内存数据库仍然需要定期持久化到外存。</li>
 <li>异步复制系统中，当主副本不可用时，由于数据没来得及同步到多数节点，最近成功写入主副本的数据可能会丢失。</li>
 <li>当突然断电时，固态硬盘不能保证数据已经完全刷盘，甚至用户显式调用 fsync 都无济于事。此外，磁盘驱动也可能有 bug。</li>
 <li>磁盘上的数据可能随着时间逐渐损坏，甚至副本数据也可能同时损坏，此时只能依赖于历史备份来恢复数据。</li>
@@ -283,7 +283,7 @@
 <li>一个事务可以看到另一个未提交事务的中间状态。如上文的邮件未读数的例子，读取到部分更新状态的数据库会让用户感到迷惑，并可能导致其他事务做出错误的决定。</li>
 <li>如果事务中止，回滚所有操作，允许脏读会让另一个事务读取到被回滚的数据。</li>
 </ol>
-<h4 id="没有脏写"><a href="#没有脏写" class="headerlink" title="没有脏写"></a>没有脏写</h4><p>两个事务同时尝试更新数据库中的相同对象，写入的顺序我们是无法得知的，但是我们知道通常后面的写入会覆盖前面的吸入。如果先写入的是尚未提交事务的一部分，那么后一个写入会覆盖这个尚未提交的值，这被称为<strong>脏写</strong>（dirty write）。</p>
+<h4 id="没有脏写"><a href="#没有脏写" class="headerlink" title="没有脏写"></a>没有脏写</h4><p>两个事务同时尝试更新数据库中的相同对象，写入的顺序我们是无法得知的，但是我们知道后面的写入通常会覆盖前面的写入。如果先写入的是尚未提交事务的一部分，那么后一个写入会覆盖这个尚未提交的值，这被称为<strong>脏写</strong>（dirty write）。</p>
 <p>在<strong>读已提交</strong>的隔离级别上运行的事务不存在脏写问题，通常是延迟第二次写入，直到第一次写入事务提交或中止为止。</p>
 <p>通过禁止脏写，可以避免一些并发产生的不一致问题：</p>
 <ol>
@@ -294,7 +294,7 @@
 <h4 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h4><p>读已提交是一个常见的隔离级别，是 Oracle 11g、PostgreSQL、SQL Server 2012、MemSQL 和其他许多数据库的默认设置。</p>
 <p>那么如何实现读已提交的隔离级别呢？</p>
 <p>首先是脏写，最简单且最常见的解决办法是使用行锁（起源于关系型数据库），即针对单条数据的<strong>长时写锁</strong>（Long Period Write Lock）。当事务想要修改某个对象时，先获取该对象的锁，如果已经被获取，则等待；如果成功获取，则可以写入数据，等待事务提交时才释放锁。</p>
-<p>其次是脏读，可以使用针对单条数据的短时读锁来解决脏读问题。读锁可以并发，但是与上述的写锁是互斥的，这可以保证有脏数据（未提交的更改）时，其他事务针对该对象的读取都会被阻塞。但使用行锁的性能也不是很好，因为一个长些事务，可能会把其他读取该对象的读事务给“饿死”，损失性能且造成长时间延迟。</p>
+<p>其次是脏读，可以使用针对单条数据的短时读锁来解决脏读问题。读锁可以并发，但是与上述的写锁是互斥的，这可以保证有脏数据（未提交的更改）时，其他事务针对该对象的读取都会被阻塞。但使用行锁的性能也不是很好，因为一个长写事务，可能会把其他读取该对象的读事务给“饿死”，损失性能且造成长时间延迟。</p>
 <p>处于这个原因，大多数数据库会使用非锁的形式实现读已提交：对于写入的某个对象，数据库会记住旧的已提交值，和由当前持有写入锁的事务设置的新值。当写事务正在进行时，任何其他读取对象都会读到旧值，只有当新值提交时，其余读事务才会读取到新值。将其泛化一下，就是我们常说的 MVCC。</p>
 <h3 id="快照隔离和可重复读"><a href="#快照隔离和可重复读" class="headerlink" title="快照隔离和可重复读"></a>快照隔离和可重复读</h3><p>读已提交似乎满足了事务所需的一切。它允许中止，满足了原子性的要求；它防止读取不完整的事务结果，并且防止并发写入造成的混乱，满足了隔离性的要求。</p>
 <p>但是使用此隔离级别的时候，仍有很多地方可能会产生并发错误。如下图所示，考虑这么一种场景，Alice 分两个账户，各存了 500 块，但如果其两次分别查看两个账户期间，发生了一笔转账交易，则两次查看的余额加起来并不等于 100。对 Alice 来说，现在她的账户似乎总共只有 900 块——看起来有 100 块已经凭空消失了。</p>
@@ -336,7 +336,7 @@
 <li>具有较晚事务 ID 的事务所做的任何写入都会被忽略。</li>
 <li>剩余其他的数据都对此事务可见。</li>
 </ol>
-<p>如果事务 txid 是自增的，可以这么理解：</p>
+<p>如果事务 txid 是自增的，可以理解为：</p>
 <ol>
 <li>对于所有 txid &lt; x 的事务，如果已经中止或正在进行，其所写数据不可见。</li>
 <li>对于所有 txid &gt; x 的事务，所写数据皆不可见。</li>
@@ -377,7 +377,7 @@
 
 <p>具体的使用还是需要根据应用需求来定。</p>
 <h4 id="自动检测丢失更新"><a href="#自动检测丢失更新" class="headerlink" title="自动检测丢失更新"></a>自动检测丢失更新</h4><p>除了悲观地强制执行原子操作外，还可以使用乐观的方式，允许其并发执行，检测到更新丢失后再重试。</p>
-<p>在快照隔离级别的基础上，可以高效地对更新丢失进行检测。事实上，PostgreSQL 的可重复读、Oracle 的可串行化和 SQL Server 的快照隔离级别都能自动机检测丢失更新的冲突，并中止事务的执行。但是 MySQL&#x2F;InnoDB 的可重复读不会检测丢失更新，一些作者认为，数据库必须能防止丢失更新才称得上是提供了快照隔离，因此在这个定义下，MySQL 不提供快照隔离。</p>
+<p>在快照隔离级别的基础上，可以高效地对更新丢失进行检测。事实上，PostgreSQL 的可重复读、Oracle 的可串行化和 SQL Server 的快照隔离级别都能自动机检测丢失更新的冲突，并中止事务的执行。但是 MySQL&#x2F;InnoDB 的可重复读不会检测丢失更新，一些开发者认为，数据库必须能防止丢失更新，才能称得上是提供了快照隔离，因此，在这个定义下，MySQL 不提供快照隔离的隔离级别。</p>
 <p>丢失更新检测不需要应用程序代码使用任何特殊的数据库功能，不太容易出错。</p>
 <h4 id="比较并设置（CAS）"><a href="#比较并设置（CAS）" class="headerlink" title="比较并设置（CAS）"></a>比较并设置（CAS）</h4><p>比较并设置（CAS，Compare And Set）是不加锁实现原子操作的一种常见方式，其使用的是内存共享的方式。目的是为了避免丢失更新：只有当前值从上次读取时一直未改变，才允许更新生效。如果当前值与先前读取的值不一致，则更新不生效，必须重新读取，再次尝试。</p>
 <p>下面是一个例子，防止两个用户同时更新一个 wiki 页面，可以尝试这种方式：</p>
@@ -400,7 +400,7 @@
 <li>由于涉及到多个对象，单对象的原子操作不起作用。</li>
 <li>在快照隔离级别实现中，想要自动防止写偏序必须实现真正的可串行化隔离。</li>
 <li>虽然有些数据允许执行约束，但是往往是单对象的简单约束，如唯一约束、外键约束等，当然，可以使用触发器或物化视图来实现。</li>
-<li>如果没办法使用可串行化的隔离级别，还可用使用数据库提供的显式加锁（for update）机制来显式加锁。</li>
+<li>如果没办法使用可串行化的隔离级别，还可以使用数据库提供的显式加锁（for update）机制来显式加锁。</li>
 </ul>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">BEGIN</span> TRANSACTION;</span><br><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> doctors</span><br><span class="line">  <span class="keyword">WHERE</span> on_call <span class="operator">=</span> <span class="literal">TRUE</span></span><br><span class="line">  <span class="keyword">AND</span> shift_id <span class="operator">=</span> <span class="number">1234</span> <span class="keyword">FOR</span> <span class="keyword">UPDATE</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">UPDATE</span> doctors</span><br><span class="line">  <span class="keyword">SET</span> on_call <span class="operator">=</span> <span class="literal">FALSE</span></span><br><span class="line">  <span class="keyword">WHERE</span> name <span class="operator">=</span> <span class="string">&#x27;Alice&#x27;</span></span><br><span class="line">  <span class="keyword">AND</span> shift_id <span class="operator">=</span> <span class="number">1234</span>;</span><br><span class="line">  </span><br><span class="line"><span class="keyword">COMMIT</span>;</span><br></pre></td></tr></table></figure>
 
