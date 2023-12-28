@@ -1,9 +1,9 @@
-<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>一文了解事务 | 谈笑风生间</title><meta name="author" content="谈笑风生间"><meta name="copyright" content="谈笑风生间"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="简化容错，不惧失败 在实际的生产环境中，分布式数据系统面临着命运的裁决，诸多不幸随时可能发生：  系统侧：数据库软件和硬件系统在任何时间都有可能会发生故障 应用侧：应用程序在任意时刻都可能会崩溃 网络侧：数据库与应用、或与其他数据库节点的连接随时可能断开 并发：多个客户端并发写入时，可能会有竞态条件和相互覆盖 半读：一个客户端可能会读到部分更新的数据库  复杂度是不灭的，只能转移。为了实现可靠性，">
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>一文了解事务 | 谈笑风生间</title><meta name="author" content="谈笑风生间"><meta name="copyright" content="谈笑风生间"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="简化容错，不惧失败在实际的生产环境中，分布式数据系统面临着命运的裁决，诸多不幸随时可能发生：  系统侧：数据库软件和硬件系统在任何时间都有可能会发生故障 应用侧：应用程序在任意时刻都可能会崩溃 网络侧：数据库与应用、或与其他数据库节点的连接随时可能断开 并发：多个客户端并发写入时，可能会有竞态条件和相互覆盖 半读：一个客户端可能会读到部分更新的数据库  复杂度是不灭的，只能转移。为了实现可靠性，数">
 <meta property="og:type" content="article">
 <meta property="og:title" content="一文了解事务">
 <meta property="og:url" content="https://makonike.github.io/2023/01/04/%E4%B8%80%E6%96%87%E4%BA%86%E8%A7%A3%E4%BA%8B%E5%8A%A1/index.html">
 <meta property="og:site_name" content="谈笑风生间">
-<meta property="og:description" content="简化容错，不惧失败 在实际的生产环境中，分布式数据系统面临着命运的裁决，诸多不幸随时可能发生：  系统侧：数据库软件和硬件系统在任何时间都有可能会发生故障 应用侧：应用程序在任意时刻都可能会崩溃 网络侧：数据库与应用、或与其他数据库节点的连接随时可能断开 并发：多个客户端并发写入时，可能会有竞态条件和相互覆盖 半读：一个客户端可能会读到部分更新的数据库  复杂度是不灭的，只能转移。为了实现可靠性，">
+<meta property="og:description" content="简化容错，不惧失败在实际的生产环境中，分布式数据系统面临着命运的裁决，诸多不幸随时可能发生：  系统侧：数据库软件和硬件系统在任何时间都有可能会发生故障 应用侧：应用程序在任意时刻都可能会崩溃 网络侧：数据库与应用、或与其他数据库节点的连接随时可能断开 并发：多个客户端并发写入时，可能会有竞态条件和相互覆盖 半读：一个客户端可能会读到部分更新的数据库  复杂度是不灭的，只能转移。为了实现可靠性，数">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://makonike-blog.oss-cn-guangzhou.aliyuncs.com/blog/yiwenliaojieshiwu/title.jpg">
 <meta property="article:published_time" content="2023-01-04T15:50:02.000Z">
@@ -163,8 +163,7 @@
       }
     }
     detectApple()
-    })(window)</script><link rel="stylesheet" href="//at.alicdn.com/t/font_8d5l8fzk5b87iudi.css"><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://makonike-blog.oss-cn-guangzhou.aliyuncs.com/blog/title/avatar1.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">24</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">33</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://makonike-blog.oss-cn-guangzhou.aliyuncs.com/blog/yiwenliaojieshiwu/title.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="谈笑风生间"><span class="site-name">谈笑风生间</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">一文了解事务</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-01-04T15:50:02.000Z" title="发表于 2023-01-04 23:50:02">2023-01-04</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-07-27T15:13:44.854Z" title="更新于 2023-07-27 23:13:44">2023-07-27</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%AD%A6%E4%B9%A0%E6%97%A5%E5%BF%97/">学习日志</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E4%B8%80%E6%96%87%E7%B3%BB%E5%88%97/">一文系列</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/">阅读笔记</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">13.7k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>41分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="一文了解事务"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="简化容错，不惧失败">简化容错，不惧失败</h2>
-<p>在实际的生产环境中，分布式数据系统面临着命运的裁决，诸多不幸随时可能发生：</p>
+    })(window)</script><link rel="stylesheet" href="//at.alicdn.com/t/font_8d5l8fzk5b87iudi.css"><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://makonike-blog.oss-cn-guangzhou.aliyuncs.com/blog/title/avatar1.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">24</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">33</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://makonike-blog.oss-cn-guangzhou.aliyuncs.com/blog/yiwenliaojieshiwu/title.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="谈笑风生间"><span class="site-name">谈笑风生间</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">一文了解事务</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-01-04T15:50:02.000Z" title="发表于 2023-01-04 23:50:02">2023-01-04</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-07-27T15:13:44.854Z" title="更新于 2023-07-27 23:13:44">2023-07-27</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%AD%A6%E4%B9%A0%E6%97%A5%E5%BF%97/">学习日志</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E4%B8%80%E6%96%87%E7%B3%BB%E5%88%97/">一文系列</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/">阅读笔记</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">13.7k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>41分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="一文了解事务"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="简化容错，不惧失败"><a href="#简化容错，不惧失败" class="headerlink" title="简化容错，不惧失败"></a>简化容错，不惧失败</h2><p>在实际的生产环境中，分布式数据系统面临着命运的裁决，诸多不幸随时可能发生：</p>
 <ul>
 <li>系统侧：数据库软件和硬件系统在任何时间都有可能会发生故障</li>
 <li>应用侧：应用程序在任意时刻都可能会崩溃</li>
@@ -177,22 +176,18 @@
 <p>从<strong>时间</strong>的角度看，事务在一个生命周期中保证了一组操作的整体性，从<strong>空间</strong>的角度看，事务在多个事务间做好了并发控制。</p>
 <p>当然，事务不是天然存在的，事务简化了应用编程模型，但任何便利性都是有代价的，使用事务的时候一定程度上牺牲了性能和可用性。如果有多个客户端的事务并发执行，还会涉及到隔离性的问题。</p>
 <p>从另一个角度来说，也不是所有的应用都需要事务，有时候弱化事务保证或者完全放弃事务也是完全可以接受的，因为这样可以获得更高的性能或者更高可用性，而且一些安全属性也可以在没有事务的情况下实现。一般来说，数据库允许用户在隔离级别与性能之间做选择。</p>
-<h2 id="棘手的概念">棘手的概念</h2>
-<p>现在几乎所有的关系型数据库和一些非关系型数据库都支持事务，大多数遵循 IBM System R（第一个 SQL 数据库）在 1975 年引入的风格。</p>
+<h2 id="棘手的概念"><a href="#棘手的概念" class="headerlink" title="棘手的概念"></a>棘手的概念</h2><p>现在几乎所有的关系型数据库和一些非关系型数据库都支持事务，大多数遵循 IBM System R（第一个 SQL 数据库）在 1975 年引入的风格。</p>
 <p>但是近些年，NoSQL 的发展对事务的概念造成了一些冲击，在 2000 年后为了支持大规模分布式数据的存储，NoSQL 引入了分区、冗余，部分放弃了对原有事务的完整支持。部分新一代数据库通过重新定义“事务”来号称仍然支持事务，亦或是为了商业的宣传引入近似的名词。</p>
 <p>其中不乏两种极端的观点，一种认为事务与可伸缩性不可兼得，大型的分布式系统必须放弃事务以保持高可用和高性能；另一种认为事务是保证高可用的应用不丢失数据的必要条件。这两种观点都有失偏颇，与任何技术一样，事务有其优点和局限性，为了理解这些权衡，我们需要了解事务在正常情况与极端情况下锁提供保证的细节。</p>
-<h3 id="ACID-的含义">ACID 的含义</h3>
-<p>事务提供的安全保证通常由缩略词 ACID 来描述，ACID 代表<strong>原子性（Atomicity）</strong>，<strong>一致性（Consistency）</strong>，<strong>隔离性（Isolation）</strong> 和 <strong>持久性（Durability）</strong>。它由 Theo Härder 和 Andreas Reuter 于 1983 年提出，目的是为数据库中的容错保证提供一种相对精确的描述。但是不同数据库对 ACID 的支持并不相同，尤其是 Isolation-隔离性。如今，ACID 更多的沦为一个营销术语。</p>
+<h3 id="ACID-的含义"><a href="#ACID-的含义" class="headerlink" title="ACID 的含义"></a>ACID 的含义</h3><p>事务提供的安全保证通常由缩略词 ACID 来描述，ACID 代表<strong>原子性（Atomicity）</strong>，<strong>一致性（Consistency）</strong>，<strong>隔离性（Isolation）</strong> 和 <strong>持久性（Durability）</strong>。它由 Theo Härder 和 Andreas Reuter 于 1983 年提出，目的是为数据库中的容错保证提供一种相对精确的描述。但是不同数据库对 ACID 的支持并不相同，尤其是 Isolation-隔离性。如今，ACID 更多的沦为一个营销术语。</p>
 <blockquote>
 <p>与 ACID 一同提到的另一个标准为 BASE，代表了<strong>基本可用性（Basically Available）</strong>，<strong>软状态（Soft State）</strong> 和 <strong>最终一致性（Eventual consistency）</strong>。它比 ACID 的定义更模糊，因此 BASE 更多用来描述不符合 ACID 标准的系统。</p>
 </blockquote>
 <p>下面将逐一探究 Atomicity、Consistency、Isolation 和 Durability 的精确含义，以此提炼出事务的思想。</p>
-<h4 id="原子性（Atomicity）">原子性（Atomicity）</h4>
-<p>原子一般指不可分割的最小单位。在并发编程中，一个线程执行一个原子操作，这意味着另一个线程无法看到该操作执行到一半的中间结果。系统只能处于操作之前或操作之后的状态，而不是介于两者之间的状态。</p>
-<p>但是 ACID 的<strong>原子性并不是关于并发的</strong>，它更多描述的是单个客户端/线程内，一组操作可以被原子执行，如果执行到一半，已经执行的操作可以被全部回滚。原子性提供的保证是<strong>在发生错误时，会回滚该事务所有已经写入的变更</strong>。</p>
+<h4 id="原子性（Atomicity）"><a href="#原子性（Atomicity）" class="headerlink" title="原子性（Atomicity）"></a>原子性（Atomicity）</h4><p>原子一般指不可分割的最小单位。在并发编程中，一个线程执行一个原子操作，这意味着另一个线程无法看到该操作执行到一半的中间结果。系统只能处于操作之前或操作之后的状态，而不是介于两者之间的状态。</p>
+<p>但是 ACID 的<strong>原子性并不是关于并发的</strong>，它更多描述的是单个客户端&#x2F;线程内，一组操作可以被原子执行，如果执行到一半，已经执行的操作可以被全部回滚。原子性提供的保证是<strong>在发生错误时，会回滚该事务所有已经写入的变更</strong>。</p>
 <p>如果没有原子性，在多处变更进行到一半时发生错误（例如进程崩溃、网络连接中断、磁盘变满或某种完整性约束被违反），<strong>很难知道哪些变更已经生效，哪些变更没有生效</strong>。此时应用程序可以再试一次，但是这需要承担某些变更两次执行生效的风险，这可能会导致重复数据或者错误的数据。原子性简化了这个问题，使得引用程序可以放心和安全地重试。以此看来，原子性或许叫<strong>可中止性（abortability）</strong> 会更好。</p>
-<h4 id="一致性（Consistency）">一致性（Consistency）</h4>
-<p>一致性是一个被广泛使用的词，在不同的上下文中，有着不同的含义：</p>
+<h4 id="一致性（Consistency）"><a href="#一致性（Consistency）" class="headerlink" title="一致性（Consistency）"></a>一致性（Consistency）</h4><p>一致性是一个被广泛使用的词，在不同的上下文中，有着不同的含义：</p>
 <ol>
 <li><strong>多副本</strong>：包括多副本一致性和异步复制带来的最终一致性问题</li>
 <li><strong>一致性哈希</strong>：一种分区和调度的方式，在增删机器节点后，可以以较小代价进行副本迁移和负载均衡。</li>
@@ -209,14 +204,12 @@
 <blockquote>
 <p>乔・海勒斯坦（Joe Hellerstein）指出，在 Härder 与 Reuter 的论文中，“ACID 中的 C”是被“扔进去凑缩写单词的”，而且那时候大家都不怎么在乎一致性。</p>
 </blockquote>
-<h4 id="隔离性（Isolation）">隔离性（Isolation）</h4>
-<p>多个客户端并发访问相同的数据库记录时，会产生<strong>并发问题</strong>，或者称为<strong>竞态条件（race condition）</strong>。</p>
+<h4 id="隔离性（Isolation）"><a href="#隔离性（Isolation）" class="headerlink" title="隔离性（Isolation）"></a>隔离性（Isolation）</h4><p>多个客户端并发访问相同的数据库记录时，会产生<strong>并发问题</strong>，或者称为<strong>竞态条件（race condition）</strong>。</p>
 <p>下图是一个简单例子。假设有两个客户端同时在数据库中递增同一个计数器，每个客户端需要先读取计数器的值，加 1，再写回新值。如图所示，计数器的值本应从 42 增长至 44，由于竞态条件，实际上只增长至 43。</p>
 <p><img src="https://makonike-blog.oss-cn-guangzhou.aliyuncs.com/blog/yiwenliaojieshiwu/img1.png" alt="两个客户端并发递增计数器"></p>
 <p>ACID 的隔离性用于解决这种问题。隔离性的定义是指<strong>每个事务的执行都是互相隔离的，每个事务都认为自己是系统中唯一正在运行的事务</strong>。在传统教科书上，这种事务隔离形式被称为<strong>可串行化（Serializability）</strong>，即如果事务都串行执行，则任意时刻必然只有一个事务在执行，从而在根本上消除了可能存在的并发问题。用另一句话说，数据库的隔离性确保了<strong>多个事务并行执行的结果应当与这些事务串行执行（一个接一个）的结果是一样的</strong>。</p>
 <p>在实际生产中很少使用可串行化这么强的隔离性，因为它会带来性能损失。实际上隔离性强弱类似于一个光谱，数据库系统提供商一般会实现其中几个，用户可以根据业务情况在隔离性和性能间进行选择。后文我们会详细讨论除可串行化外的几种<strong>弱隔离级别</strong>。</p>
-<h4 id="持久性（Durability）">持久性（Durability）</h4>
-<p>数据库系统的目的是，提供一个安全的地方存储数据，而不用担心丢失。持久性保证了<strong>一旦事务提交，即使发生硬件故障或数据库崩溃，已经写入的任何数据都不会丢失</strong>。</p>
+<h4 id="持久性（Durability）"><a href="#持久性（Durability）" class="headerlink" title="持久性（Durability）"></a>持久性（Durability）</h4><p>数据库系统的目的是，提供一个安全的地方存储数据，而不用担心丢失。持久性保证了<strong>一旦事务提交，即使发生硬件故障或数据库崩溃，已经写入的任何数据都不会丢失</strong>。</p>
 <p>在单节点（单机）数据库中，持久性意味着<strong>以数据页</strong>（Page）或<strong>日志形式</strong>（WAL）写入了非易失性存储。在<strong>多副本</strong>（replication）数据库中，持久性意味着数据已经复制到了多数节点中。</p>
 <p>然而，完美的持久性是不存在的，它只能做到某种程度的保证：如果所有硬盘和所有副本备份同时被销毁，那显然没有任何数据库能救得了你，数据必然丢失。</p>
 <p>在现实世界中，存储涉及到的所有环节都不是完美的：</p>
@@ -228,10 +221,10 @@
 <li>磁盘上的数据可能随着时间逐渐损坏，甚至副本数据也可能同时损坏，此时只能依赖于历史备份来恢复数据。</li>
 </ul>
 <p>在实践中，没有一种技术可以提供绝对保证。因此数据的持久性要通过多种手段来保证，如强制刷盘、校验码、异地多机房复制、定期备份等，但这也只能做到部分的保证，而非绝对保证。与往常一样，最好抱着怀疑的态度接受任何理论上的“保证”。</p>
-<h3 id="单对象和多对象操作">单对象和多对象操作</h3>
-<p>在 ACID 中，原子性和隔离性描述了客户端在同一事务中执行多次写入时数据库提供的保证，并且它们通常假设一个事务中会同时修改多个对象（行，文档，记录）。比起单对象事务，这种多对象事务是一种更强的保证，且更为实用，因为通常多个写入不会只针对单个对象。</p>
+<h3 id="单对象和多对象操作"><a href="#单对象和多对象操作" class="headerlink" title="单对象和多对象操作"></a>单对象和多对象操作</h3><p>在 ACID 中，原子性和隔离性描述了客户端在同一事务中执行多次写入时数据库提供的保证，并且它们通常假设一个事务中会同时修改多个对象（行，文档，记录）。比起单对象事务，这种多对象事务是一种更强的保证，且更为实用，因为通常多个写入不会只针对单个对象。</p>
 <p>假设有一个电子邮件应用，通过以下语句来查询显示用户未读邮件的数量：</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> COUNT（<span class="operator">*</span>）<span class="keyword">FROM</span> emails <span class="keyword">WHERE</span> recipient_id <span class="operator">=</span> <span class="number">2</span> <span class="keyword">AND</span> unread_flag <span class="operator">=</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+
 <p>如果邮件太多，查询可能会比较慢，你可能会使用单独一个字段来存储未读邮件的数量（<strong>反范式化</strong>denormalization），每次新增和读过邮件都需要更新该字段值。</p>
 <p>在下图中，用户 2 遇到了异常情况：邮件列表中显示有未读消息，但是未读数字段值却显示为 0，因为此时未读数字段值还未递增。你可能觉得未读邮件数错误不是什么很重要的事，换种角度，如果这个是客户账户余额，将邮件收发看成支付交易，这种错误将造成不可估量的影响。</p>
 <p><img src="https://makonike-blog.oss-cn-guangzhou.aliyuncs.com/blog/yiwenliaojieshiwu/img2.png" alt="违反隔离性：一个事务读取另一个事务的未被执行的写入（“脏读”）"></p>
@@ -244,8 +237,7 @@
 <li>从逻辑上来看，可以使用事务管理器，为每个事务分配一个唯一标识符，从而对操作进行分组。MySQL 中 MVCC 的实现就是如此，为每个事务分配了一个独一无二的 trx_id 以标识操作属于哪个事务。</li>
 </ol>
 <p>另一方面，许多非关系型数据库并没有将这些操作组合成一个逻辑单元的方法，即使可能存在 BATCH API，但它们不一定具有事务语义，可能有些对象操作成功，有些对象操作失败。</p>
-<h4 id="单对象写入">单对象写入</h4>
-<p>当对单个对象进行变更时，原子性和隔离性依然能提供保障。例如，假设你需要向数据库写入一个 20KB 的 JSON 文档：</p>
+<h4 id="单对象写入"><a href="#单对象写入" class="headerlink" title="单对象写入"></a>单对象写入</h4><p>当对单个对象进行变更时，原子性和隔离性依然能提供保障。例如，假设你需要向数据库写入一个 20KB 的 JSON 文档：</p>
 <ul>
 <li>如果在发送第一个 10KB 后网络连接中断，数据库是否存储了前 10KB 无法解析的 JSON 片段？</li>
 <li>如果该操作是在覆盖一个老版本同 id 数据，覆盖一半时发生了电源故障，数据库是否会存在一半新值一半旧值的情况？</li>
@@ -254,8 +246,7 @@
 <p>这些问题让人头大，如果数据库不提供任何保证，应用侧需要写很多错误处理逻辑。因此存储引擎一个几乎普遍的目标是：对单节点的单个对象（如键值对）上提供原子性和隔离性保证。原子性使得数据库可以通过日志（WAL）来实现崩溃恢复，且可以使用每个对象上的锁来实现隔离（每次只允许一个线程访问该对象）。</p>
 <p>另外一些数据库也会提供更复杂的原子操作支持，如原子自增操作，避免了上文讨论隔离性时多个客户端并发自增计数器导致的交错更新。另一种更加泛化的原子性保证是提供单个对象上的 CAS 操作，运行用户原子执行针对单个对象的 read-modify-write 操作。细想一下，原子自增（atomic increment）在 ACID 中实际上是指隔离性（Isolation）的范畴，此处的原子自增则是多线程中的概念。</p>
 <p>在许多 NoSQL 服务中，CAS 以及其他单一对象操作被称为“轻量级事务”，甚至处于营销目的重新定义为“ACID”，但是这个术语是具有误导性的。事务通常被理解为<strong>将多个对象的多个操作合并为一个执行单元的机制</strong>。</p>
-<h4 id="界定对多对象事务的需求">界定对多对象事务的需求</h4>
-<p>由于多对象事务很难跨分区实现，且会可能会非常损失性能，许多分布式数据存储都放弃了多对象事务。但是有的场景确实需要多对象事务，因此一些数据库将其是否打开事务作为一个选项供用户选择。</p>
+<h4 id="界定对多对象事务的需求"><a href="#界定对多对象事务的需求" class="headerlink" title="界定对多对象事务的需求"></a>界定对多对象事务的需求</h4><p>由于多对象事务很难跨分区实现，且会可能会非常损失性能，许多分布式数据存储都放弃了多对象事务。但是有的场景确实需要多对象事务，因此一些数据库将其是否打开事务作为一个选项供用户选择。</p>
 <p>因此，在用户侧，数据库选型时，需要审视一下是否<strong>真的需要多对象事务，是否只用键值数据模型和单对象操作就能满足需求</strong>。一些情况下是可以的，但更多的场景还是需要协同更新多个对象：</p>
 <ul>
 <li>在关系型数据库中，一些表通常存有外键，在更新时需要进行同步更新。</li>
@@ -263,8 +254,7 @@
 <li>在支持次级索引的数据库中，数据和对应的多个索引需要进行同步更新。</li>
 </ul>
 <p>如果数据库没有实现多对象事务，那么这些保证只能在应用侧实现，徒增了复杂度，且很容易出错。</p>
-<h4 id="故障与中止">故障与中止</h4>
-<p>事务一个关键特征是<strong>如果发生错误，它可以中止并安全地重试</strong>。ACID 数据库就基于这样的哲学：当出现违反原子性、一致性或持久性的危险，宁愿完全丢弃已经执行的变更，而不是留下部分执行成功的半成品。</p>
+<h4 id="故障与中止"><a href="#故障与中止" class="headerlink" title="故障与中止"></a>故障与中止</h4><p>事务一个关键特征是<strong>如果发生错误，它可以中止并安全地重试</strong>。ACID 数据库就基于这样的哲学：当出现违反原子性、一致性或持久性的危险，宁愿完全丢弃已经执行的变更，而不是留下部分执行成功的半成品。</p>
 <p>然而不是所有的数据库系统都遵循这个哲学。例如多副本中的无主模型，就采用了“尽力而为”的模型，即尽可能保证完成任务，如不能完成，也不会回滚已经发生的修改。因此，从错误中恢复是应用程序的责任。</p>
 <p>尽管无脑重试被中止的事务简单而有效，但是这并不是万能的：</p>
 <ol>
@@ -274,30 +264,26 @@
 <li>某事务在数据库之外如果有副作用，重试事务时会导致副作用多次发生。如果某个副作用是发送邮件，则肯定不希望事务每次重试时都发送一次电子邮件。如果想进行多个系统间的协同，可以考虑<strong>两阶段提交（2PC，two-phase commit）</strong>。</li>
 <li>如果客户端进程在重试中失效，任何试图写入数据库的数据都将丢失。</li>
 </ol>
-<h2 id="弱隔离级别">弱隔离级别</h2>
-<p>如果两个事务需要变更的数据之间没有交集，则可以安全地 <strong>并行（parallel）</strong> 执行，否则会出现竞态条件。并发 BUG 很难通过测试找到，因为这样的错误只在特殊时序下才会触发，而这样的时序问题可能非常少发生，通常很难复现。在大型应用中，单客户端情况的开发已经很麻烦了，有多个客户端并发访问更加剧了开发难度。</p>
+<h2 id="弱隔离级别"><a href="#弱隔离级别" class="headerlink" title="弱隔离级别"></a>弱隔离级别</h2><p>如果两个事务需要变更的数据之间没有交集，则可以安全地 <strong>并行（parallel）</strong> 执行，否则会出现竞态条件。并发 BUG 很难通过测试找到，因为这样的错误只在特殊时序下才会触发，而这样的时序问题可能非常少发生，通常很难复现。在大型应用中，单客户端情况的开发已经很麻烦了，有多个客户端并发访问更加剧了开发难度。</p>
 <p>数据库通过 <strong>事务隔离（transaction isolation）</strong> 来给用户提供一种隔离保证，隐藏应用程序开发者的并发问题，从而简化应用程序的开发。从理论上讲，隔离可以通过假装没有并发来发生：即 <strong>可串行化（Serializability）</strong> 的隔离等级，意味着数据库保证事务的效果如同串行执行，任何时刻都只有一个事务在执行。</p>
 <p>从实现的角度对几种隔离级别进行理解，会简单一些。如 ANSI SQL 定义的四种隔离级别： <strong>读未提交（Read Uncommited）</strong> 、 <strong>读已提交（Read Commited）</strong> 、 <strong>可重复读（Repeatable Read）</strong> 和 <strong>可串行化（Serializability）</strong> ，都可以从使用锁实现事务的角度来理解。</p>
 <p>最强隔离性的隔离级别——可串行化，可以理解为一把全局的排它锁，每个事务启动时使用，在提交、回滚或终止时释放，这种隔离级别无疑性能最差。这侧面反映了其它几种弱隔离级别的意义：提高性能，缩小加锁的粒度、减小加锁的时间，从而牺牲一部分事务保证来换取性能。从上锁的强度考虑，有<strong>互斥锁</strong>（Mutex Lock，也称为写锁）和<strong>共享锁</strong>（Shared Lock，又称为读锁）；从上锁的长短来考虑，有<strong>长时锁</strong>（Long Period Lock，在事务开始时获取锁，尽管中途需要保证事务的动作已经执行完成，也要到事务结束时才释放锁）和<strong>短时锁</strong>（Short Period Lock，执行动作前申请锁，执行结束后立即释放锁）；从上锁的粗细来考虑，有<strong>对象锁</strong>（Row Lock，在关系型数据库中描述为锁住一行数据）和<strong>谓词锁</strong>（Predicate Lock，锁住一个范围内的数据）。</p>
 <p>以锁来考虑隔离级别并没有覆盖到一个常见的隔离级别——<strong>快照隔离（SI，Snapshot Isolation）</strong>，因为它引出了另一个实现技术——<strong>多版本并发控制（MVCC，multi-version concurrency control）</strong>。由于属于不同的实现，快照隔离和可重复读在隔离级别的光谱上属于一个偏序关系，不能说谁强于谁。</p>
 <p>接下来将讨论几种弱隔离级别，以及隔离级别不够导致的几种现象——<strong>丢失更新</strong>（Lost Update）、<strong>写偏序</strong>（Write Skew）和<strong>幻读</strong>（Phantom Read）。</p>
-<h3 id="读已提交">读已提交</h3>
-<p>性能最好的隔离级别是完全不上任何锁，但是其中会存在脏读和脏写的问题，为了避免脏写，需要给要更改的对象加长时写锁，读数据时并不加锁，此时隔离级别为<strong>读未提交</strong>（RU，Read Uncommitted）。但是此时仍然会有脏读，为了避免脏读，可以对要读取的对象加短时读锁，此时的隔离级别就是<strong>读已提交</strong>（RC，Read Committed）。</p>
+<h3 id="读已提交"><a href="#读已提交" class="headerlink" title="读已提交"></a>读已提交</h3><p>性能最好的隔离级别是完全不上任何锁，但是其中会存在脏读和脏写的问题，为了避免脏写，需要给要更改的对象加长时写锁，读数据时并不加锁，此时隔离级别为<strong>读未提交</strong>（RU，Read Uncommitted）。但是此时仍然会有脏读，为了避免脏读，可以对要读取的对象加短时读锁，此时的隔离级别就是<strong>读已提交</strong>（RC，Read Committed）。</p>
 <p>读已提交是最基本的事务隔离级别，它提供了两个保证：</p>
 <ol>
 <li>从数据库读时，只能读到已提交的数据（没有脏读，即 dirty reads）。</li>
 <li>在写入数据库时，只会覆盖已提交的数据（没有脏写，即 dirty writes）。</li>
 </ol>
-<h4 id="没有脏读">没有脏读</h4>
-<p>如果一个事务 A 能够读到另一个未提交事务 B 的中间状态，则称为<strong>脏读</strong>（dirty reads）。在读已提交的隔离级别上运行的事务是不会有脏读的。举个例子，如下图所示，在用户 1 提交之前，用户 2 读到的值一直是 2。</p>
+<h4 id="没有脏读"><a href="#没有脏读" class="headerlink" title="没有脏读"></a>没有脏读</h4><p>如果一个事务 A 能够读到另一个未提交事务 B 的中间状态，则称为<strong>脏读</strong>（dirty reads）。在读已提交的隔离级别上运行的事务是不会有脏读的。举个例子，如下图所示，在用户 1 提交之前，用户 2 读到的值一直是 2。</p>
 <p><img src="https://makonike-blog.oss-cn-guangzhou.aliyuncs.com/blog/yiwenliaojieshiwu/img4.png" alt=" 没有脏读：用户 2 只有在用户 1 的事务已经提交后才能看到 x 的新值。"></p>
 <p>试想一下允许脏读的情况：</p>
 <ol>
 <li>一个事务可以看到另一个未提交事务的中间状态。如上文的邮件未读数的例子，读取到部分更新状态的数据库会让用户感到迷惑，并可能导致其他事务做出错误的决定。</li>
 <li>如果事务中止，回滚所有操作，允许脏读会让另一个事务读取到被回滚的数据。</li>
 </ol>
-<h4 id="没有脏写">没有脏写</h4>
-<p>两个事务同时尝试更新数据库中的相同对象，写入的顺序我们是无法得知的，但是我们知道后面的写入通常会覆盖前面的写入。如果先写入的是尚未提交事务的一部分，那么后一个写入会覆盖这个尚未提交的值，这被称为<strong>脏写</strong>（dirty write）。</p>
+<h4 id="没有脏写"><a href="#没有脏写" class="headerlink" title="没有脏写"></a>没有脏写</h4><p>两个事务同时尝试更新数据库中的相同对象，写入的顺序我们是无法得知的，但是我们知道后面的写入通常会覆盖前面的写入。如果先写入的是尚未提交事务的一部分，那么后一个写入会覆盖这个尚未提交的值，这被称为<strong>脏写</strong>（dirty write）。</p>
 <p>在<strong>读已提交</strong>的隔离级别上运行的事务不存在脏写问题，通常是延迟第二次写入，直到第一次写入事务提交或中止为止。</p>
 <p>通过禁止脏写，可以避免一些并发产生的不一致问题：</p>
 <ol>
@@ -305,14 +291,12 @@
 <li>但是读已提交并不能防止讨论隔离性时提到的更新计数器的竞态条件问题，因为这属于一种更新丢失现象。两个事务都是读的已提交的数据（因此不是脏读），且写入时，另一个事务写入发生在前一个事务之后（因此不是脏写），但仍然不能避免写入丢失的问题（只增加了一次）。</li>
 </ol>
 <p><img src="https://makonike-blog.oss-cn-guangzhou.aliyuncs.com/blog/yiwenliaojieshiwu/img5.png" alt="如果存在脏写，来自不同事务的冲突写入可能会混淆在一起"></p>
-<h4 id="实现">实现</h4>
-<p>读已提交是一个常见的隔离级别，是 Oracle 11g、PostgreSQL、SQL Server 2012、MemSQL 和其他许多数据库的默认设置。</p>
+<h4 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h4><p>读已提交是一个常见的隔离级别，是 Oracle 11g、PostgreSQL、SQL Server 2012、MemSQL 和其他许多数据库的默认设置。</p>
 <p>那么如何实现读已提交的隔离级别呢？</p>
 <p>首先是脏写，最简单且最常见的解决办法是使用行锁（起源于关系型数据库），即针对单条数据的<strong>长时写锁</strong>（Long Period Write Lock）。当事务想要修改某个对象时，先获取该对象的锁，如果已经被获取，则等待；如果成功获取，则可以写入数据，等待事务提交时才释放锁。</p>
 <p>其次是脏读，可以使用针对单条数据的短时读锁来解决脏读问题。读锁可以并发，但是与上述的写锁是互斥的，这可以保证有脏数据（未提交的更改）时，其他事务针对该对象的读取都会被阻塞。但使用行锁的性能也不是很好，因为一个长写事务，可能会把其他读取该对象的读事务给“饿死”，损失性能且造成长时间延迟。</p>
 <p>处于这个原因，大多数数据库会使用非锁的形式实现读已提交：对于写入的某个对象，数据库会记住旧的已提交值，和由当前持有写入锁的事务设置的新值。当写事务正在进行时，任何其他读取对象都会读到旧值，只有当新值提交时，其余读事务才会读取到新值。将其泛化一下，就是我们常说的 MVCC。</p>
-<h3 id="快照隔离和可重复读">快照隔离和可重复读</h3>
-<p>读已提交似乎满足了事务所需的一切。它允许中止，满足了原子性的要求；它防止读取不完整的事务结果，并且防止并发写入造成的混乱，满足了隔离性的要求。</p>
+<h3 id="快照隔离和可重复读"><a href="#快照隔离和可重复读" class="headerlink" title="快照隔离和可重复读"></a>快照隔离和可重复读</h3><p>读已提交似乎满足了事务所需的一切。它允许中止，满足了原子性的要求；它防止读取不完整的事务结果，并且防止并发写入造成的混乱，满足了隔离性的要求。</p>
 <p>但是使用此隔离级别的时候，仍有很多地方可能会产生并发错误。如下图所示，考虑这么一种场景，Alice 分两个账户，各存了 500 块，但如果其两次分别查看两个账户期间，发生了一笔转账交易，则两次查看的余额加起来并不等于 100。对 Alice 来说，现在她的账户似乎总共只有 900 块——看起来有 100 块已经凭空消失了。</p>
 <p><img src="https://makonike-blog.oss-cn-guangzhou.aliyuncs.com/blog/yiwenliaojieshiwu/img6.png" alt="读取偏差：Alice 观察数据库处于不一致的状态"></p>
 <p>这种异常被称为<strong>不可重复读</strong>（non-repeatable read）或者叫<strong>读倾斜</strong>（read skew，skew 有点被过度使用）。读已提交隔离级别是允许不可重复读的，如上述例子，每次读取到的都是已提交的内容。</p>
@@ -323,8 +307,7 @@
 </ol>
 <p><strong>快照隔离</strong>（snapshot isolation）的隔离级别可以解决上述的问题，使用快照隔离级别时，每个事务都可以取得一个某个时间点的<strong>一致性快照</strong>（consistent snapshot），在整个事务期间，读取到的状态都是该时间点的快照，其他事务的修改并不会影响到该快照的数据。</p>
 <p>快照隔离是一个流行的功能，PostgreSQL、使用 InnoDB 引擎的 MySQL、Oracle、SQL Server 等数据库系统都支持快照隔离。</p>
-<h4 id="快照隔离的实现">快照隔离的实现</h4>
-<p>与读已提交一样，快照隔离也使用加锁的方式来防止脏写，但是进行数据读取的时候不使用锁。快照隔离的一个关键原则就是“读不阻塞写，写也不阻塞读”，从而允许用户在长时间查询时不影响新的写入。</p>
+<h4 id="快照隔离的实现"><a href="#快照隔离的实现" class="headerlink" title="快照隔离的实现"></a>快照隔离的实现</h4><p>与读已提交一样，快照隔离也使用加锁的方式来防止脏写，但是进行数据读取的时候不使用锁。快照隔离的一个关键原则就是“读不阻塞写，写也不阻塞读”，从而允许用户在长时间查询时不影响新的写入。</p>
 <p>为了实现快照隔离，保证读不阻塞写，且避免脏读，数据库需要对同一对象保留多个已提交的版本，我们称之为<strong>多版本并发控制</strong>（MVCC，multi-version concurrency control）。</p>
 <p>如果一个数据只需要实现到读已提交级别，那么保留两个版本就够了（旧版本和新版本）。但是如果要实现快照隔离级别，一般使用 MVCC。相对于锁而言，MVCC 是一种事务实现的流派，而且在近些年来很受欢迎。当然，MVCC 也是一种思想，具体到实现，有 MVTO（Timestamp Ordering）、MVOCC（Optimistic Currenccy Control）、MV2PL（2 Phrase Lock）等，即基于多版本，加上一种避免写写冲突的方式。</p>
 <p>具体来说，使用 MVCC 流派，也可以实现读未提交、读已提交、快照隔离、可串行化等隔离级别。</p>
@@ -334,9 +317,9 @@
 </ol>
 <p>MVCC 的基本要点如下：</p>
 <ol>
-<li>每个事务开始时会获取一个自增的、唯一的事务 ID（txid），该 txid=max(existing txid) + 1。</li>
+<li>每个事务开始时会获取一个自增的、唯一的事务 ID（txid），该 txid&#x3D;max(existing txid) + 1。</li>
 <li>该事务在修改数据时，不会修改以前的版本，而是会新增一个具有 txid 版本的数据。</li>
-<li>该事务只能访问所有版本&lt;=txid 的数据。</li>
+<li>该事务只能访问所有版本&lt;&#x3D;txid 的数据。</li>
 <li>在写入时，如果发现某个数据存在&gt;txid 的版本，则存在写写冲突。</li>
 </ol>
 <p>下图是 PostgreSQL 中基于 MVCC 实现快照隔离的示意图，场景是两个账户，每个账户各有 500 块。例子通过使用两个版本信息字段：created_by 和 deleted_by 来标记一个数据版本的生命周期。如果某个事务删除了一行，那么该行实际上并未从数据库中删除，而是通过在 deleted_by 字段打上请求删除事务的 txid 来标记删除，在稍后时间当确定没有事务访问该已删除数据时，数据库中的垃圾回收机制就会将所有带有删除标记的行移除，并释放其空间。</p>
@@ -345,9 +328,8 @@
 </blockquote>
 <p><img src="https://makonike-blog.oss-cn-guangzhou.aliyuncs.com/blog/yiwenliaojieshiwu/img7.png" alt="使用多版本对象实现快照隔离"></p>
 <p>在上述过程中，<code>UPDATE</code>操作被翻译为<code>DELETE</code>和<code>INSERT</code>，余额为 500 块的行会被标记为被事务 13 删除，而余额为 400 块的行由事务 13 创建。</p>
-<h4 id="可见性规则">可见性规则</h4>
-<p>在多版本并发控制中，对每个对象来说，最重要的是控制其版本对事务的可见性，保证事务能够看到一致性的视图。</p>
-<p>在多版本并发控制中，每个对象都有多个版本，上文提到一个事务只能访问到所有版本&lt;=txid 的数据其实是较为粗略的说法，展开来讲：</p>
+<h4 id="可见性规则"><a href="#可见性规则" class="headerlink" title="可见性规则"></a>可见性规则</h4><p>在多版本并发控制中，对每个对象来说，最重要的是控制其版本对事务的可见性，保证事务能够看到一致性的视图。</p>
+<p>在多版本并发控制中，每个对象都有多个版本，上文提到一个事务只能访问到所有版本&lt;&#x3D;txid 的数据其实是较为粗略的说法，展开来讲：</p>
 <ol>
 <li>事务开始时，所有正在进行的事务（包括已经开始但是未提交或终止的事务），所做的任何写入都会被忽略。</li>
 <li>被中止的事务，所做的任何写入都会被忽略。</li>
@@ -365,18 +347,15 @@
 <li>对象未被标记为删除，或如果被标记为删除，请求删除的事务在读事务开始时尚未提交。</li>
 </ul>
 <p>长时间运行的事务可能会长时间使用快照，并继续读取（从其他事务角度看）早已被覆盖或删除的值。由于从来不原地更新值，而是每次值改变时创建一个新的版本，数据库可以在提供一致性快照的同时只产生很小的额外开销（只需要动态维护部分对象，即改变的值的快照版本）。</p>
-<h4 id="索引与快照隔离">索引与快照隔离</h4>
-<p>索引如何在多版本数据库中工作？一种选择是使索引简单指向对象的所有版本，并且需要索引查询来过滤掉当前事务不可见的任何对象版本。当垃圾收集机制删除任何不再可见的旧版本对象时，相应的索引条目也可以被删除。</p>
+<h4 id="索引与快照隔离"><a href="#索引与快照隔离" class="headerlink" title="索引与快照隔离"></a>索引与快照隔离</h4><p>索引如何在多版本数据库中工作？一种选择是使索引简单指向对象的所有版本，并且需要索引查询来过滤掉当前事务不可见的任何对象版本。当垃圾收集机制删除任何不再可见的旧版本对象时，相应的索引条目也可以被删除。</p>
 <p>在实践中，有许多实现细节共同决定了多版本并发控制的性能。例如，如果同一对象的不同版本可以放入同一个数据页中，PostgreSQL 的优化使得对应的索引指向可以不用更新。 <a target="_blank" rel="noopener" href="http://momjian.us/main/presentations/internals.html#mvcc">Bruce Momjian: “MVCC Unmasked,” momjian.us, July 2014.</a>。</p>
-<p>CouchDB、Datomic 和 LMDB 使用的是另一种方式，仅 <strong>追加 / 写时拷贝（append-only/copy-on-write）</strong> 的 B 树变体，是一种多版本技术的变体。<a target="_blank" rel="noopener" href="https://anyview.fun/2022/12/13/%E8%B5%B0%E8%BF%91bolt/">boltdb</a>就是参考的 LMDB，也可以归为此类。此类 B 树每次修改，都会引起叶子节点（所有数据都会落到叶子节点）到根节点的一条路径级联更新（叶子节点变了，其父节点内容——指针，也要跟着修改，因此引起级联更新），如果引起节点的分裂或合并，会引发更大范围的更新和修改。</p>
+<p>CouchDB、Datomic 和 LMDB 使用的是另一种方式，仅 <strong>追加 &#x2F; 写时拷贝（append-only&#x2F;copy-on-write）</strong> 的 B 树变体，是一种多版本技术的变体。<a target="_blank" rel="noopener" href="https://anyview.fun/2022/12/13/%E8%B5%B0%E8%BF%91bolt/">boltdb</a>就是参考的 LMDB，也可以归为此类。此类 B 树每次修改，都会引起叶子节点（所有数据都会落到叶子节点）到根节点的一条路径级联更新（叶子节点变了，其父节点内容——指针，也要跟着修改，因此引起级联更新），如果引起节点的分裂或合并，会引发更大范围的更新和修改。</p>
 <p>这种修改不会覆盖旧的页面，每个修改页面都会创建一份副本，更新的节点会指向其子页面的新版本。使用仅追加的 B 树，每个写入事务都会创建一颗新的 B 树，当创建时，从该特定树根节点生长的树就是数据库的一个一致性视图。没必要根据事务 ID 来过滤掉事务，因为后续写入的事务都不能修改现有的 B 树，它们只能创建新的树根（副本）来修改。很显然，这种方式也需要一个负责压缩和垃圾收集的后台进程。</p>
-<h4 id="命名困惑">命名困惑</h4>
-<p>在 1975 年 System R 定义 ANSI SQL 标准的隔离级别时，只定义了 RU、RC、RR 和 Serializability。当时，快照隔离还没有被发明，但是上述四种级别汇总有一个和快照隔离类似的级别：<strong>可重复读</strong>（RR，Repeatable Read）。</p>
+<h4 id="命名困惑"><a href="#命名困惑" class="headerlink" title="命名困惑"></a>命名困惑</h4><p>在 1975 年 System R 定义 ANSI SQL 标准的隔离级别时，只定义了 RU、RC、RR 和 Serializability。当时，快照隔离还没有被发明，但是上述四种级别汇总有一个和快照隔离类似的级别：<strong>可重复读</strong>（RR，Repeatable Read）。</p>
 <p>许多数据库实现了快照隔离，却使用不同的名字来称呼。在 Oracle 中称为 <strong>可串行化（Serializable）</strong> 的，在 PostgreSQL 和 MySQL 中称为 <strong>可重复读（repeatable read）</strong>。</p>
 <p>这种命名混淆的原因在于 SQL 标准没有快照隔离的概念，因为那时快照隔离的概念还没正式下定义。相反，它定义了可重复读，看起来和快照隔离很像，于是 PostgreSQL 和 MySQL 称其快照隔离级别为可重复读，因为这样可以符合 SQL 标准要求，以号称兼容 SQL 标准。</p>
 <p>严格来说，SQL 标准对隔离级别的定义是有缺陷的，模糊且不精确的。虽然一些文献中有对可重复读进行了精确定义，但大部分实现并不严格满足此定义。到最后，没有人知道可重复读的真正含义。</p>
-<h3 id="防止丢失更新">防止丢失更新</h3>
-<p>读已提交和快照隔离级别主要保证了只读事务在并发写入时可以读到什么，却忽略了两个事务并发写入的问题，一种特定类型的写 - 写冲突可能出现的。</p>
+<h3 id="防止丢失更新"><a href="#防止丢失更新" class="headerlink" title="防止丢失更新"></a>防止丢失更新</h3><p>读已提交和快照隔离级别主要保证了只读事务在并发写入时可以读到什么，却忽略了两个事务并发写入的问题，一种特定类型的写 - 写冲突可能出现的。</p>
 <p>并发写入事务之间的冲突中，最著名的就是丢失更新问题，像前文提到的俩客户端并发递增计数器的例子。</p>
 <p>更新丢失问题发生的关键在于，两个事务中都有读后写序列（读取 - 修改 - 写入序列，写偏序也是这个序列，但是是针对多个对象），即写依赖于之前的读。如果读到的内容被其他事务修改，则本事务稍后的依赖于此读的写就会发生问题：</p>
 <ol>
@@ -385,39 +364,36 @@
 <li>两个用户同时修改 wiki 页面，并且都是修改后将页面完整覆写回。</li>
 </ol>
 <p>从以上可以看出这是一个普遍的问题，所以已经有了各种解决方案。</p>
-<h4 id="原子写">原子写</h4>
-<p>简单来看就是将 read-modify-write 的操作打包成一个原子操作。如下指令，它在大多数关系型数据库中执行是并发安全的：</p>
+<h4 id="原子写"><a href="#原子写" class="headerlink" title="原子写"></a>原子写</h4><p>简单来看就是将 read-modify-write 的操作打包成一个原子操作。如下指令，它在大多数关系型数据库中执行是并发安全的：</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">UPDATE</span> counters <span class="keyword">SET</span> <span class="keyword">value</span> <span class="operator">=</span> <span class="keyword">value</span> <span class="operator">+</span> <span class="number">1</span> <span class="keyword">WHERE</span> key <span class="operator">=</span> <span class="string">&#x27;foo&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
 <p>像 MongoDB 这样的文档数据库也提供了对 JSON 文档的一部分进行本地修改的原子操作，Redis 中也提供了修改数据结构（如优先队列）的原子操作。但是不是所有的操作都能被解释为原子操作，如 wiki 页面的更新，设计到任意文本编辑，其实将其表示为原子的变化流也是可以实现的，但是比较复杂。</p>
 <p>原子操作通常在读取对象时获取其上的排它锁实现，以便更新完成时没有其他事务可以读取它。这种技术被称为<strong>游标稳定性（cursor stability）</strong>，另一种选择是简单地强制所有针对同一个对象的操作在单一线程上执行，将任何单个对象的执行序列化。</p>
-<h4 id="显式上锁">显式上锁</h4>
-<p>即应用在有针对单个对象的 read-modify-write 序列时，将是否上锁的决策交给应用层，显式地锁定将要更新的对象。通常的 SQL 语法如下：</p>
+<h4 id="显式上锁"><a href="#显式上锁" class="headerlink" title="显式上锁"></a>显式上锁</h4><p>即应用在有针对单个对象的 read-modify-write 序列时，将是否上锁的决策交给应用层，显式地锁定将要更新的对象。通常的 SQL 语法如下：</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> xx <span class="keyword">where</span> xx <span class="keyword">for</span> <span class="keyword">update</span>;</span><br></pre></td></tr></table></figure>
+
 <p>考虑一个场景，一个多人游戏中，几个玩家可以同时移动相同的棋子。由于规则限制，一个原子操作可能不够。此时可以使用数据库提供的语法进行显式上锁，来防止两个玩家移动有交集的棋子集合。</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">BEGIN</span> TRANSACTION;</span><br><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> figures</span><br><span class="line">  <span class="keyword">WHERE</span> name <span class="operator">=</span> <span class="string">&#x27;robot&#x27;</span> <span class="keyword">AND</span> game_id <span class="operator">=</span> <span class="number">222</span></span><br><span class="line"><span class="keyword">FOR</span> <span class="keyword">UPDATE</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 检查玩家的操作是否有效，然后更新先前 SELECT 返回棋子的位置。</span></span><br><span class="line"><span class="keyword">UPDATE</span> figures <span class="keyword">SET</span> position <span class="operator">=</span> <span class="string">&#x27;c4&#x27;</span> <span class="keyword">WHERE</span> id <span class="operator">=</span> <span class="number">1234</span>;</span><br><span class="line"><span class="keyword">COMMIT</span>;</span><br></pre></td></tr></table></figure>
+
 <p>具体的使用还是需要根据应用需求来定。</p>
-<h4 id="自动检测丢失更新">自动检测丢失更新</h4>
-<p>除了悲观地强制执行原子操作外，还可以使用乐观的方式，允许其并发执行，检测到更新丢失后再重试。</p>
-<p>在快照隔离级别的基础上，可以高效地对更新丢失进行检测。事实上，PostgreSQL 的可重复读、Oracle 的可串行化和 SQL Server 的快照隔离级别都能自动机检测丢失更新的冲突，并中止事务的执行。但是 MySQL/InnoDB 的可重复读不会检测丢失更新，一些开发者认为，数据库必须能防止丢失更新，才能称得上是提供了快照隔离，因此，在这个定义下，MySQL 不提供快照隔离的隔离级别。</p>
+<h4 id="自动检测丢失更新"><a href="#自动检测丢失更新" class="headerlink" title="自动检测丢失更新"></a>自动检测丢失更新</h4><p>除了悲观地强制执行原子操作外，还可以使用乐观的方式，允许其并发执行，检测到更新丢失后再重试。</p>
+<p>在快照隔离级别的基础上，可以高效地对更新丢失进行检测。事实上，PostgreSQL 的可重复读、Oracle 的可串行化和 SQL Server 的快照隔离级别都能自动机检测丢失更新的冲突，并中止事务的执行。但是 MySQL&#x2F;InnoDB 的可重复读不会检测丢失更新，一些开发者认为，数据库必须能防止丢失更新，才能称得上是提供了快照隔离，因此，在这个定义下，MySQL 不提供快照隔离的隔离级别。</p>
 <p>丢失更新检测不需要应用程序代码使用任何特殊的数据库功能，不太容易出错。</p>
-<h4 id="比较并设置（CAS）">比较并设置（CAS）</h4>
-<p>比较并设置（CAS，Compare And Set）是不加锁实现原子操作的一种常见方式，其使用的是内存共享的方式。目的是为了避免丢失更新：只有当前值从上次读取时一直未改变，才允许更新生效。如果当前值与先前读取的值不一致，则更新不生效，必须重新读取，再次尝试。</p>
+<h4 id="比较并设置（CAS）"><a href="#比较并设置（CAS）" class="headerlink" title="比较并设置（CAS）"></a>比较并设置（CAS）</h4><p>比较并设置（CAS，Compare And Set）是不加锁实现原子操作的一种常见方式，其使用的是内存共享的方式。目的是为了避免丢失更新：只有当前值从上次读取时一直未改变，才允许更新生效。如果当前值与先前读取的值不一致，则更新不生效，必须重新读取，再次尝试。</p>
 <p>下面是一个例子，防止两个用户同时更新一个 wiki 页面，可以尝试这种方式：</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 根据数据库的实现情况，这可能安全也可能不安全</span></span><br><span class="line"><span class="keyword">UPDATE</span> wiki_pages <span class="keyword">SET</span> content <span class="operator">=</span> <span class="string">&#x27;新内容&#x27;</span></span><br><span class="line">  <span class="keyword">WHERE</span> id <span class="operator">=</span> <span class="number">1234</span> <span class="keyword">AND</span> content <span class="operator">=</span> <span class="string">&#x27;旧内容&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
 <p>如果更新后的值与旧值一致，此次更新涉及到一些版本问题的话也是不行的，可以加一个更新时间戳字段或唯一的版本号作为标识。</p>
-<h4 id="多副本冲突与解决">多副本冲突与解决</h4>
-<p>在多副本数据库中，解决丢失更新的问题要更难一些。</p>
+<h4 id="多副本冲突与解决"><a href="#多副本冲突与解决" class="headerlink" title="多副本冲突与解决"></a>多副本冲突与解决</h4><p>在多副本数据库中，解决丢失更新的问题要更难一些。</p>
 <p>在多住和无主模型中，允许数据进行并发写入和异步复制，无法保证只有一个最新数据的副本。所以 CAS 与基于锁的技术不适用于这种情况。这种多副本数据库中的一种常见方法是允许并发写入创建多个冲突版本的值（称为兄弟值），并使用应用程序或特殊的数据结构在事件发生后解决和合并这些版本。</p>
 <p>特殊情况下，当多个操作满足“交换律”（即，可以在不同的副本上以不同的顺序应用它们，且仍然可以得到相同的结果）时，原子操作看一看在多副本数据中正常工作，如计数器场景就满足交换律，在 Riak2.0 之后就支持并发更新，且会自动合并结果，不会有丢失更新问题。</p>
 <p>另一方面，<strong>后者胜</strong>（LWW，last write win）的冲突解决策略是会造成丢失更新问题的，虽然很多多副本数据库都默认使用这种策略来进行冲突解决。</p>
-<h3 id="写偏序和幻读">写偏序和幻读</h3>
-<p>前文中我们提到了脏写和丢失更新，当不同事务并发写入相同对象时，会出现这两种竞态问题。它们可以在数据库层面自动解决，也可以在应用侧通过显式调用原子操作或加锁来解决。</p>
+<h3 id="写偏序和幻读"><a href="#写偏序和幻读" class="headerlink" title="写偏序和幻读"></a>写偏序和幻读</h3><p>前文中我们提到了脏写和丢失更新，当不同事务并发写入相同对象时，会出现这两种竞态问题。它们可以在数据库层面自动解决，也可以在应用侧通过显式调用原子操作或加锁来解决。</p>
 <p>除了上述并发写入问题外，还有一些比较微妙的冲突例子，涉及到多个对象的访问。</p>
 <p>考虑如下的一个场景，一个医生在值班，议员通常要求几个医生同时值班，即使有特殊情况，也要保证有不少于一个医生值班。假设在某天，轮到 Alice 和 Bob 两人值班，不巧的是，他们都感觉自己身体不适，且恰好同时申请请假。</p>
 <p><img src="https://makonike-blog.oss-cn-guangzhou.aliyuncs.com/blog/yiwenliaojieshiwu/img8.png" alt="写入偏差导致应用程序错误的示例"></p>
 <p>假定数据库允许在快照隔离级别下，Alice 和 Bob 同时开启事务，同时查询了今天的值班情况，两次查询都返回 2，所以两个事务都进入下一个阶段。Alice 更新自己的记录休班，Bob 也做了同样的事情，两个事务都成功提交了，现在没有医生值班了。这违反了至少有一名医生值班的规定。</p>
-<h4 id="写偏序的特点">写偏序的特点</h4>
-<p>上述产生的异常被称为写偏序，它既不是脏写，也不是丢失更新，因为这两个事务在更新两个不同的对象。在这里发生的冲突虽然不明显，但显然也是一个竞态条件：如果两个事务串行执行，那么后一个申请的医生就不能歇班了。这种异常行为只有在事务并发进行时才有可能发生。</p>
+<h4 id="写偏序的特点"><a href="#写偏序的特点" class="headerlink" title="写偏序的特点"></a>写偏序的特点</h4><p>上述产生的异常被称为写偏序，它既不是脏写，也不是丢失更新，因为这两个事务在更新两个不同的对象。在这里发生的冲突虽然不明显，但显然也是一个竞态条件：如果两个事务串行执行，那么后一个申请的医生就不能歇班了。这种异常行为只有在事务并发进行时才有可能发生。</p>
 <p>我们可以把写偏序视为丢失更新问题的一种泛化体现。写偏序的本质也是 read-modify-write，虽然涉及多个对象，但本质仍然是<strong>一个事务的写入导致另一个事务读取到的信息失效</strong>。写偏序是由 MVCC 实现的快照隔离级别特有的缺陷，它出现的原因是多个事务的读依赖于同一个不变的快照。</p>
 <p>解决丢失更新的许多手段都无法用在解决写偏序上：</p>
 <ul>
@@ -427,8 +403,8 @@
 <li>如果没办法使用可串行化的隔离级别，还可以使用数据库提供的显式加锁（for update）机制来显式加锁。</li>
 </ul>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">BEGIN</span> TRANSACTION;</span><br><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> doctors</span><br><span class="line">  <span class="keyword">WHERE</span> on_call <span class="operator">=</span> <span class="literal">TRUE</span></span><br><span class="line">  <span class="keyword">AND</span> shift_id <span class="operator">=</span> <span class="number">1234</span> <span class="keyword">FOR</span> <span class="keyword">UPDATE</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">UPDATE</span> doctors</span><br><span class="line">  <span class="keyword">SET</span> on_call <span class="operator">=</span> <span class="literal">FALSE</span></span><br><span class="line">  <span class="keyword">WHERE</span> name <span class="operator">=</span> <span class="string">&#x27;Alice&#x27;</span></span><br><span class="line">  <span class="keyword">AND</span> shift_id <span class="operator">=</span> <span class="number">1234</span>;</span><br><span class="line">  </span><br><span class="line"><span class="keyword">COMMIT</span>;</span><br></pre></td></tr></table></figure>
-<h4 id="其他写偏序例子">其他写偏序例子</h4>
-<p>写偏序的特定在于：</p>
+
+<h4 id="其他写偏序例子"><a href="#其他写偏序例子" class="headerlink" title="其他写偏序例子"></a>其他写偏序例子</h4><p>写偏序的特定在于：</p>
 <ol>
 <li>涉及多个对象。</li>
 <li>一个事务的写入会导致另外事务的读取失效，进而影响其写入决策。</li>
@@ -439,6 +415,7 @@
 </ul>
 <p>基本的流程是先检查预定是否有冲突，如果没有，则创建会议。</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">BEGIN</span> TRANSACTION;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 检查所有现存的与 12:00~13:00 重叠的预定</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="built_in">COUNT</span>(<span class="operator">*</span>) <span class="keyword">FROM</span> bookings</span><br><span class="line"><span class="keyword">WHERE</span> room_id <span class="operator">=</span> <span class="number">123</span> <span class="keyword">AND</span></span><br><span class="line">  end_time <span class="operator">&gt;</span> <span class="string">&#x27;2015-01-01 12:00&#x27;</span> <span class="keyword">AND</span> start_time <span class="operator">&lt;</span> <span class="string">&#x27;2015-01-01 13:00&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 如果之前的查询返回 0</span></span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> bookings(room_id, start_time, end_time, user_id)</span><br><span class="line">  <span class="keyword">VALUES</span> (<span class="number">123</span>, <span class="string">&#x27;2015-01-01 12:00&#x27;</span>, <span class="string">&#x27;2015-01-01 13:00&#x27;</span>, <span class="number">666</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">COMMIT</span>;</span><br></pre></td></tr></table></figure>
+
 <p>在快照隔离级别下，使用上述语句无法避免多个用户并发预定时，预定到同一个会议室的时段。只能使用可串行化来避免冲突。</p>
 <ul>
 <li>多人棋牌游戏</li>
@@ -452,8 +429,7 @@
 <li>防止双重开支</li>
 </ul>
 <p>允许用户花钱和使用点券的服务，通常会在用户消费时检查其是否透支。可以通过在账户余额中插入一个临时的试探性项目来实现这一点，列出账户中所有项目，并检查总和是否为正值。在写偏序的场景下，可能会发生两个支出项目同时插入，导致余额为负数，但是这两个事务都不会注意到另一个。</p>
-<h4 id="幻读导致写偏序">幻读导致写偏序</h4>
-<p>以上的例子都可以归纳为以下流程：</p>
+<h4 id="幻读导致写偏序"><a href="#幻读导致写偏序" class="headerlink" title="幻读导致写偏序"></a>幻读导致写偏序</h4><p>以上的例子都可以归纳为以下流程：</p>
 <ol>
 <li>通过 select 语句 + 条件过滤出符合所有行。</li>
 <li>根据上述结果，应用侧决定是否继续。</li>
@@ -462,18 +438,15 @@
 <p>其中步骤 3 可能会导致另一个事务的步骤 1 失效，即如果另一个事务此时重新执行 1 的 select 查询，会得到不一致的结果。进而影响步骤 2 的决策。</p>
 <p>上述例子中，医生值班的例子可以通过<code>FOR UPDATE</code>锁定步骤 1 的行来避免写偏序。但是其他的例子不同：它们检查是否<strong>不存在</strong>某些满足条件的行，而写入会<strong>添加</strong>一个匹配相同条件的行。如果步骤 1 没有返回任何行，那么<code>SELECT FOR UPDATE</code>是锁不了任何东西的。</p>
 <p>这种一个事务的写入会改变另一个事务的查询结果的现象，称为<strong>幻读</strong>（Phantom Read）。快照隔离能够避免只读事务中的幻读，但是对于读写事务，就可能会出现由幻读引起的写偏序问题。</p>
-<h4 id="物化冲突">物化冲突</h4>
-<p>如果幻读的问题是在步骤一查询不出任何对象以加锁，那么我们自然会想，能否手动添加一些对象来使得加锁称为可能？</p>
+<h4 id="物化冲突"><a href="#物化冲突" class="headerlink" title="物化冲突"></a>物化冲突</h4><p>如果幻读的问题是在步骤一查询不出任何对象以加锁，那么我们自然会想，能否手动添加一些对象来使得加锁称为可能？</p>
 <p>在会议室预定的场景中，可以想象一个关于时间槽和房间的表。这个表中的每一行对应特定时间段的特定房间，比如每 15 分钟一个时间段。可以提前插入房间和时间的所有可能组合行。如果现在一个事务想要预定某个会议室某个时间段，就可以在表中将对应的对象锁住，然后执行预定的操作。</p>
 <p>值得强调的是，该表只为了防止同时预定同一个会议室的同一时间段，并不用来存储预定信息，可以理解为一个锁表，每一行都是一把锁。</p>
 <p>这种方法被称为<strong>物化冲突（materializing conflicts）</strong>，因为它将幻读转化为了数据库中一组具体行上的锁冲突。不过弄清楚如何物化冲突很难，也很容易出错，而且这种方法将解决并发冲突的细节暴露给了应用层（应用层需要感知物化出来的表），是一种万不得已才会采用的方法。如果数据库本来就支持可串行化，那么大多数情况下，直接使用可串行化隔离级别是更可取的。</p>
-<h2 id="总结">总结</h2>
-<p>这篇文章可以说是《DDIA》第七章的阅读笔记，内容基本都参考于此。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这篇文章可以说是《DDIA》第七章的阅读笔记，内容基本都参考于此。</p>
 <p>本文从事务棘手的概念入手，剖析了 ACID 的各个含义。其中<strong>原子性</strong>保证了发生错误时会回滚事务期间生效的所有变更；<strong>一致性</strong>需要根据上下文来明确语义，在 ACID 中是指对某些不变性的维持，需要由应用侧和数据库共同维护，更多指的是应用侧的属性；<strong>隔离性</strong>保证了每个执行的结果是相互隔离的，每个事务都可以认为自己是系统中唯一正在运行的事务。其实隔离性强弱类似一个光谱，因此引申出了弱隔离性。<strong>持久性</strong>保证了一旦事务提交，即使发生硬件故障或数据库崩溃，已经写入的任何数据都不会丢失。但是完美的持久性是不存在的，应当采取多种技术去兜底，抱着怀疑的态度接受任何理论上的“保证”。</p>
 <p>然后我们从单对象和多对象的角度切入，阐明了两者间事务实现的差别，为后文弱隔离性的介绍奠定基础。</p>
 <p>本文还从非正式的角度举例讨论了几种弱隔离级别，针对这几种隔离级别由于事务保证不充分导致的各种问题，以及这些问题的解决方法。<strong>读已提交</strong>隔离级别通过两个快照来避免脏读，通过添加行锁来防止脏写；<strong>快照隔离</strong>级别通过实现 MVCC 来避免了不可重复读的问题；<strong>可串行化</strong>隔离级别则解决了数据库事务并发的所有问题，包括快照隔离无法解决的丢失更新问题、幻读和写偏序问题。</p>
-<h2 id="参考与推荐阅读">参考与推荐阅读</h2>
-<ul>
+<h2 id="参考与推荐阅读"><a href="#参考与推荐阅读" class="headerlink" title="参考与推荐阅读"></a>参考与推荐阅读</h2><ul>
 <li>《DDIA》第七章——事务</li>
 <li><a target="_blank" rel="noopener" href="https://ddia.qtmuniao.com/#/ch07">DDIA 逐章精读（七）: 事务（transaction)</a></li>
 </ul>
