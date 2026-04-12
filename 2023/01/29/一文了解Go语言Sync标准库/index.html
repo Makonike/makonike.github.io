@@ -1,30 +1,134 @@
 <!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>一文了解 Go 语言 Sync 标准库 | 谈笑风生间</title><meta name="author" content="谈笑风生间"><meta name="copyright" content="谈笑风生间"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="写在前面 Go 语言是一门在语言层面支持用户级线程的高级语言，因此并发同步在 Go 程序编写中尤其重要，其中 channel 虽然作为并发控制的高级抽象，但它的底层就是依赖于 sync 标准库中的 mutex 来实现的，因此了解 sync 标准库是每一个 Gopher 的必备技能之一。 笔者使用的 Go 版本是 1.18.1 sync.WaitGroup sync.WaitGroup 使得多个并发">
 <meta property="og:type" content="article">
 <meta property="og:title" content="一文了解 Go 语言 Sync 标准库">
-<meta property="og:url" content="https://makonike.github.io/2023/01/29/%E4%B8%80%E6%96%87%E4%BA%86%E8%A7%A3Go%E8%AF%AD%E8%A8%80Sync%E6%A0%87%E5%87%86%E5%BA%93/index.html">
+<meta property="og:url" content="https://anyview.fun/2023/01/29/%E4%B8%80%E6%96%87%E4%BA%86%E8%A7%A3Go%E8%AF%AD%E8%A8%80Sync%E6%A0%87%E5%87%86%E5%BA%93/index.html">
 <meta property="og:site_name" content="谈笑风生间">
 <meta property="og:description" content="写在前面 Go 语言是一门在语言层面支持用户级线程的高级语言，因此并发同步在 Go 程序编写中尤其重要，其中 channel 虽然作为并发控制的高级抽象，但它的底层就是依赖于 sync 标准库中的 mutex 来实现的，因此了解 sync 标准库是每一个 Gopher 的必备技能之一。 笔者使用的 Go 版本是 1.18.1 sync.WaitGroup sync.WaitGroup 使得多个并发">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://makonike-blog.oss-cn-guangzhou.aliyuncs.com/blog/yiwenliaojiegoyuyansyncbiaozhuenku/title.jpg">
 <meta property="article:published_time" content="2023-01-29T09:01:31.000Z">
-<meta property="article:modified_time" content="2023-03-30T16:51:02.614Z">
+<meta property="article:modified_time" content="2023-03-30T16:51:02.000Z">
 <meta property="article:author" content="谈笑风生间">
 <meta property="article:tag" content="Go">
+<meta property="article:tag" content="sync">
 <meta property="article:tag" content="标准库">
 <meta property="article:tag" content="源码">
 <meta property="article:tag" content="网络">
-<meta property="article:tag" content="sync">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://makonike-blog.oss-cn-guangzhou.aliyuncs.com/blog/yiwenliaojiegoyuyansyncbiaozhuenku/title.jpg"><link rel="shortcut icon" href="https://i.loli.net/2021/10/03/N9cpBZe75b2tQfz.png"><link rel="canonical" href="https://makonike.github.io/2023/01/29/%E4%B8%80%E6%96%87%E4%BA%86%E8%A7%A3Go%E8%AF%AD%E8%A8%80Sync%E6%A0%87%E5%87%86%E5%BA%93/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+<meta name="twitter:image" content="https://makonike-blog.oss-cn-guangzhou.aliyuncs.com/blog/yiwenliaojiegoyuyansyncbiaozhuenku/title.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "一文了解 Go 语言 Sync 标准库",
+  "url": "https://anyview.fun/2023/01/29/%E4%B8%80%E6%96%87%E4%BA%86%E8%A7%A3Go%E8%AF%AD%E8%A8%80Sync%E6%A0%87%E5%87%86%E5%BA%93/",
+  "image": "https://makonike-blog.oss-cn-guangzhou.aliyuncs.com/blog/yiwenliaojiegoyuyansyncbiaozhuenku/title.jpg",
+  "datePublished": "2023-01-29T09:01:31.000Z",
+  "dateModified": "2023-03-30T16:51:02.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "谈笑风生间",
+      "url": "https://anyview.fun"
+    }
+  ]
+}</script><link rel="shortcut icon" href="https://i.loli.net/2021/10/03/N9cpBZe75b2tQfz.png"><link rel="canonical" href="https://anyview.fun/2023/01/29/%E4%B8%80%E6%96%87%E4%BA%86%E8%A7%A3Go%E8%AF%AD%E8%A8%80Sync%E6%A0%87%E5%87%86%E5%BA%93/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
   root: '/',
   algolia: undefined,
   localSearch: undefined,
   translate: undefined,
-  noticeOutdate: undefined,
-  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
   copy: {
     success: '复制成功',
-    error: '复制错误',
+    error: '复制失败',
     noSupport: '浏览器不支持'
   },
   relativeDate: {
@@ -42,131 +146,25 @@
   copyright: undefined,
   lightbox: 'fancybox',
   Snackbar: undefined,
-  source: {
-    justifiedGallery: {
-      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
-      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
-    }
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
   },
   isPhotoFigcaption: false,
-  islazyload: false,
+  islazyloadPlugin: false,
   isAnchor: false,
   percent: {
     toc: true,
     rightside: false,
-  }
+  },
+  autoDarkmode: false
 }</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
   title: '一文了解 Go 语言 Sync 标准库',
-  isPost: true,
-  isHome: false,
   isHighlightShrink: false,
   isToc: true,
-  postUpdate: '2023-03-31 00:51:02'
-}</script><noscript><style type="text/css">
-  #nav {
-    opacity: 1
-  }
-  .justified-gallery img {
-    opacity: 1
-  }
-
-  #recent-posts time,
-  #post-meta time {
-    display: inline !important
-  }
-</style></noscript><script>(win=>{
-    win.saveToLocal = {
-      set: function setWithExpiry(key, value, ttl) {
-        if (ttl === 0) return
-        const now = new Date()
-        const expiryDay = ttl * 86400000
-        const item = {
-          value: value,
-          expiry: now.getTime() + expiryDay,
-        }
-        localStorage.setItem(key, JSON.stringify(item))
-      },
-
-      get: function getWithExpiry(key) {
-        const itemStr = localStorage.getItem(key)
-
-        if (!itemStr) {
-          return undefined
-        }
-        const item = JSON.parse(itemStr)
-        const now = new Date()
-
-        if (now.getTime() > item.expiry) {
-          localStorage.removeItem(key)
-          return undefined
-        }
-        return item.value
-      }
-    }
-  
-    win.getScript = url => new Promise((resolve, reject) => {
-      const script = document.createElement('script')
-      script.src = url
-      script.async = true
-      script.onerror = reject
-      script.onload = script.onreadystatechange = function() {
-        const loadState = this.readyState
-        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
-        script.onload = script.onreadystatechange = null
-        resolve()
-      }
-      document.head.appendChild(script)
-    })
-  
-    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
-      const link = document.createElement('link')
-      link.rel = 'stylesheet'
-      link.href = url
-      if (id) link.id = id
-      link.onerror = reject
-      link.onload = link.onreadystatechange = function() {
-        const loadState = this.readyState
-        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
-        link.onload = link.onreadystatechange = null
-        resolve()
-      }
-      document.head.appendChild(link)
-    })
-  
-      win.activateDarkMode = function () {
-        document.documentElement.setAttribute('data-theme', 'dark')
-        if (document.querySelector('meta[name="theme-color"]') !== null) {
-          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
-        }
-      }
-      win.activateLightMode = function () {
-        document.documentElement.setAttribute('data-theme', 'light')
-        if (document.querySelector('meta[name="theme-color"]') !== null) {
-          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
-        }
-      }
-      const t = saveToLocal.get('theme')
-    
-          if (t === 'dark') activateDarkMode()
-          else if (t === 'light') activateLightMode()
-        
-      const asideStatus = saveToLocal.get('aside-status')
-      if (asideStatus !== undefined) {
-        if (asideStatus === 'hide') {
-          document.documentElement.classList.add('hide-aside')
-        } else {
-          document.documentElement.classList.remove('hide-aside')
-        }
-      }
-    
-    const detectApple = () => {
-      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
-        document.documentElement.classList.add('apple')
-      }
-    }
-    detectApple()
-    })(window)</script><link rel="stylesheet" href="//at.alicdn.com/t/font_8d5l8fzk5b87iudi.css"><meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="谈笑风生间" type="application/atom+xml">
-</head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://makonike-blog.oss-cn-guangzhou.aliyuncs.com/blog/title/avatar1.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">24</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">33</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://makonike-blog.oss-cn-guangzhou.aliyuncs.com/blog/yiwenliaojiegoyuyansyncbiaozhuenku/title.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="谈笑风生间"><span class="site-name">谈笑风生间</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">一文了解 Go 语言 Sync 标准库</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-01-29T09:01:31.000Z" title="发表于 2023-01-29 17:01:31">2023-01-29</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-03-30T16:51:02.614Z" title="更新于 2023-03-31 00:51:02">2023-03-31</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%AD%A6%E4%B9%A0%E6%97%A5%E5%BF%97/">学习日志</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E4%B8%80%E6%96%87%E7%B3%BB%E5%88%97/">一文系列</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">16.4k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>66分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="一文了解 Go 语言 Sync 标准库"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="写在前面">写在前面</h2>
+  pageType: 'post'
+}</script><link rel="stylesheet" href="//at.alicdn.com/t/font_8d5l8fzk5b87iudi.css"><meta name="generator" content="Hexo 8.1.1"><link rel="alternate" href="/atom.xml" title="谈笑风生间" type="application/atom+xml">
+</head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="https://makonike-blog.oss-cn-guangzhou.aliyuncs.com/blog/title/avatar1.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">24</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">33</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://makonike-blog.oss-cn-guangzhou.aliyuncs.com/blog/yiwenliaojiegoyuyansyncbiaozhuenku/title.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">谈笑风生间</span></a><a class="nav-page-title" href="/"><span class="site-name">一文了解 Go 语言 Sync 标准库</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">一文了解 Go 语言 Sync 标准库</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-01-29T09:01:31.000Z" title="发表于 2023-01-29 17:01:31">2023-01-29</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-03-30T16:51:02.000Z" title="更新于 2023-03-31 00:51:02">2023-03-31</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%AD%A6%E4%B9%A0%E6%97%A5%E5%BF%97/">学习日志</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E4%B8%80%E6%96%87%E7%B3%BB%E5%88%97/">一文系列</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">16.4k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>66分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h2 id="写在前面">写在前面</h2>
 <p>Go 语言是一门在语言层面支持用户级线程的高级语言，因此并发同步在 Go 程序编写中尤其重要，其中 channel 虽然作为并发控制的高级抽象，但它的底层就是依赖于 sync 标准库中的 mutex 来实现的，因此了解 sync 标准库是每一个 Gopher 的必备技能之一。</p>
 <p>笔者使用的 Go 版本是 1.18.1</p>
 <h2 id="sync-WaitGroup">sync.WaitGroup</h2>
@@ -496,7 +494,7 @@
 <h3 id="Broadcast">Broadcast()</h3>
 <p><code>Broadcast()</code>会唤醒所有满足条件的 goroutine，这个唤醒顺序也是按照加入队列的先后顺序，先加入的会先被唤醒。</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c *Cond)</span></span> Broadcast() &#123;</span><br><span class="line">   c.checker.check()</span><br><span class="line">   runtime_notifyListNotifyAll(&amp;c.notify)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">notifyListNotifyAll</span><span class="params">(l *notifyList)</span></span> &#123;</span><br><span class="line">   <span class="comment">// fast path</span></span><br><span class="line">   <span class="keyword">if</span> atomic.Load(&amp;l.wait) == atomic.Load(&amp;l.notify) &#123;</span><br><span class="line">      <span class="keyword">return</span></span><br><span class="line">   &#125;</span><br><span class="line">   lockWithRank(&amp;l.lock, lockRankNotifyList)</span><br><span class="line">   s := l.head</span><br><span class="line">   l.head = <span class="literal">nil</span></span><br><span class="line">   l.tail = <span class="literal">nil</span></span><br><span class="line">   atomic.Store(&amp;l.notify, atomic.Load(&amp;l.wait))</span><br><span class="line">   unlock(&amp;l.lock)</span><br><span class="line">   <span class="keyword">for</span> s != <span class="literal">nil</span> &#123;</span><br><span class="line">      next := s.next</span><br><span class="line">      s.next = <span class="literal">nil</span></span><br><span class="line">      readyWithTime(s, <span class="number">4</span>)</span><br><span class="line">      s = next</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">readyWithTime</span><span class="params">(s *sudog, traceskip <span class="type">int</span>)</span></span> &#123;</span><br><span class="line">   <span class="keyword">if</span> s.releasetime != <span class="number">0</span> &#123;</span><br><span class="line">      s.releasetime = cputicks()</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="comment">// Mark g ready to run.</span></span><br><span class="line">   goready(s.g, traceskip)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>在条件长时间无法满足时，与使用<code>for &#123;&#125;</code>的忙等相比，sync.Cond 能够让出处理器的使用权，提高 CPU 的利用率。</p>
+<p>在条件长时间无法满足时，与使用<code>for {}</code>的忙等相比，sync.Cond 能够让出处理器的使用权，提高 CPU 的利用率。</p>
 <h2 id="sync-Map">sync.Map</h2>
 <p>Go 原生 map 不是线程安全的，在查找、赋值、遍历、删除的过程中都会检测写标志，一旦发现写标志置位（等于 1），则直接 panic。而 sync.Map 则是并发安全的，读取、插入、删除都保持着常数级的时间复杂度，且 sync.Map 的零值是有效的，是一个空 map。sync.Map 更适用于读多写少的场景，写多的场景中会导致 read map 缓存失效，需要加锁，导致冲突增多，而且因为未命中 read map 次数变多，导致 dirty map 提升为 read map，是一个 O(N) 的操作，会降低性能。</p>
 <p>一般解决并发读写 map 的思路是加一把大锁，在读写的时候先进行加锁，或把一个 map 分成若干个小 map，对 key 进行哈希操作，只操作对应的小 map，前者锁粒度大，影响并发性能，而后者实现较为复杂，容易出错。</p>
@@ -557,40 +555,61 @@
 <li><a target="_blank" rel="noopener" href="https://www.luozhiyun.com/archives/429">Go 中由 WaitGroup 引发对内存对齐思考</a></li>
 <li><a target="_blank" rel="noopener" href="https://juejin.cn/post/6981366395699200014">[Golang]从 sync.waitGroup 看内存对齐 - 掘金</a></li>
 </ul>
-</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://makonike.github.io">谈笑风生间</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://makonike.github.io/2023/01/29/%E4%B8%80%E6%96%87%E4%BA%86%E8%A7%A3Go%E8%AF%AD%E8%A8%80Sync%E6%A0%87%E5%87%86%E5%BA%93/">https://makonike.github.io/2023/01/29/%E4%B8%80%E6%96%87%E4%BA%86%E8%A7%A3Go%E8%AF%AD%E8%A8%80Sync%E6%A0%87%E5%87%86%E5%BA%93/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://makonike.github.io" target="_blank">谈笑风生间</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Go/">Go</a><a class="post-meta__tags" href="/tags/%E6%A0%87%E5%87%86%E5%BA%93/">标准库</a><a class="post-meta__tags" href="/tags/%E6%BA%90%E7%A0%81/">源码</a><a class="post-meta__tags" href="/tags/%E7%BD%91%E7%BB%9C/">网络</a><a class="post-meta__tags" href="/tags/sync/">sync</a></div><div class="post_share"><div class="social-share" data-image="https://makonike-blog.oss-cn-guangzhou.aliyuncs.com/blog/yiwenliaojiegoyuyansyncbiaozhuenku/title.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2023/02/01/%E4%B8%80%E6%96%87%E4%BA%86%E8%A7%A3%E4%B8%80%E8%87%B4%E6%80%A7%E5%93%88%E5%B8%8C/" title="一文了解一致性哈希"><img class="cover" src="https://makonike-blog.oss-cn-guangzhou.aliyuncs.com/blog/yiwenliaojieyizhixinghaxi/78296349_p0.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">一文了解一致性哈希</div></div></a></div><div class="next-post pull-right"><a href="/2023/01/12/%E4%B8%80%E6%96%87%E4%BA%86%E8%A7%A3Go%E8%AF%AD%E8%A8%80HTTP%E6%A0%87%E5%87%86%E5%BA%93/" title="一文了解 Go 语言 HTTP 标准库"><img class="cover" src="https://makonike-blog.oss-cn-guangzhou.aliyuncs.com/blog/yiwenliaojiegoyuyanhttpbiaozhuenku/title.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">一文了解 Go 语言 HTTP 标准库</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2023/01/12/%E4%B8%80%E6%96%87%E4%BA%86%E8%A7%A3Go%E8%AF%AD%E8%A8%80HTTP%E6%A0%87%E5%87%86%E5%BA%93/" title="一文了解 Go 语言 HTTP 标准库"><img class="cover" src="https://makonike-blog.oss-cn-guangzhou.aliyuncs.com/blog/yiwenliaojiegoyuyanhttpbiaozhuenku/title.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-01-12</div><div class="title">一文了解 Go 语言 HTTP 标准库</div></div></a></div><div><a href="/2023/08/31/%E4%B8%80%E6%96%87%E4%BA%86%E8%A7%A3Go%E8%AF%AD%E8%A8%80Context%E6%A0%87%E5%87%86%E5%BA%93/" title="一文了解 Go 语言 Context 标准库"><img class="cover" src="https://makonike-blog.oss-cn-guangzhou.aliyuncs.com/blog/shenrujiedugocontext/title.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-31</div><div class="title">一文了解 Go 语言 Context 标准库</div></div></a></div><div><a href="/2023/05/06/%E4%B8%80%E6%96%87%E4%BA%86%E8%A7%A3WebSocket%E5%8D%8F%E8%AE%AE/" title="一文了解 WebSocket 协议"><img class="cover" src="https://makonike-blog.oss-cn-guangzhou.aliyuncs.com/blog/yiwenliaojiewebsocket/title.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-05-06</div><div class="title">一文了解 WebSocket 协议</div></div></a></div><div><a href="/2023/07/23/%E5%88%9D%E6%8E%A2%E5%AE%B9%E5%99%A8%E7%BD%91%E7%BB%9C/" title="初探容器网络"><img class="cover" src="https://makonike-blog.oss-cn-guangzhou.aliyuncs.com/blog/chutanrongqiwangluo/title.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-07-23</div><div class="title">初探容器网络</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://makonike-blog.oss-cn-guangzhou.aliyuncs.com/blog/title/avatar1.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">谈笑风生间</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">24</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">33</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Makonike"><i class="fab fa-github"></i><span>Github</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/Makonike" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:makonike@anyview.fun" target="_blank" title="Email"><i class="fas fa-envelope"></i></a><a class="social-icon" href="https://anyview.fun/atom.xml" target="_blank" title=""><i class="fas fa-rss"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">技术改变世界~</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%99%E5%9C%A8%E5%89%8D%E9%9D%A2"><span class="toc-number">1.</span> <span class="toc-text">写在前面</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#sync-WaitGroup"><span class="toc-number">2.</span> <span class="toc-text">sync.WaitGroup</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#WaitGroup"><span class="toc-number">2.1.</span> <span class="toc-text">WaitGroup</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Wait"><span class="toc-number">2.2.</span> <span class="toc-text">Wait()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Add"><span class="toc-number">2.3.</span> <span class="toc-text">Add()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#WaitGroup-%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E6%80%BB%E7%BB%93"><span class="toc-number">2.4.</span> <span class="toc-text">WaitGroup 的实现原理总结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#sync-Pool"><span class="toc-number">3.</span> <span class="toc-text">sync.Pool</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A6%82%E6%9E%9C%E6%B2%A1%E6%9C%89-sync-Pool"><span class="toc-number">3.1.</span> <span class="toc-text">如果没有 sync.Pool</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#sync-Pool-%E7%9A%84%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0"><span class="toc-number">3.2.</span> <span class="toc-text">sync.Pool 的底层实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#poolLocal"><span class="toc-number">3.3.</span> <span class="toc-text">poolLocal</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#poolChain"><span class="toc-number">3.4.</span> <span class="toc-text">poolChain</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%8E%B7%E5%8F%96%E4%B8%80%E4%B8%AA%E5%AF%B9%E8%B1%A1-Get"><span class="toc-number">3.5.</span> <span class="toc-text">获取一个对象-Get()</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#pin"><span class="toc-number">3.5.1.</span> <span class="toc-text">pin()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#popHead"><span class="toc-number">3.5.2.</span> <span class="toc-text">popHead()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#getSlow"><span class="toc-number">3.5.3.</span> <span class="toc-text">getSlow()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#popTail"><span class="toc-number">3.5.4.</span> <span class="toc-text">popTail()</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%98%E6%94%BE%E4%B8%80%E4%B8%AA%E5%AF%B9%E8%B1%A1-Put"><span class="toc-number">3.6.</span> <span class="toc-text">存放一个对象-Put()</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#pushHead"><span class="toc-number">3.6.1.</span> <span class="toc-text">pushHead()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pack"><span class="toc-number">3.6.2.</span> <span class="toc-text">pack()</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#GC"><span class="toc-number">3.7.</span> <span class="toc-text">GC</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#sync-Mutex"><span class="toc-number">4.</span> <span class="toc-text">sync.Mutex</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Mutex-%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E6%80%BB%E7%BB%93"><span class="toc-number">4.1.</span> <span class="toc-text">Mutex 的实现原理总结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#sync-RWMutex"><span class="toc-number">5.</span> <span class="toc-text">sync.RWMutex</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Lock-%E4%B8%8E-UnLock"><span class="toc-number">5.1.</span> <span class="toc-text">Lock 与 UnLock</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RLock-%E4%B8%8E-RUnlock"><span class="toc-number">5.2.</span> <span class="toc-text">RLock 与 RUnlock</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8E-Mutex"><span class="toc-number">5.3.</span> <span class="toc-text">与 Mutex</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#sync-noCopy"><span class="toc-number">6.</span> <span class="toc-text">sync.noCopy</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#semaTable"><span class="toc-number">7.</span> <span class="toc-text">semaTable</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#sync-Once"><span class="toc-number">8.</span> <span class="toc-text">sync.Once</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#sync-Cond"><span class="toc-number">9.</span> <span class="toc-text">sync.Cond</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#sync-Cond-Wait"><span class="toc-number">9.1.</span> <span class="toc-text">sync.Cond.Wait()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Signal"><span class="toc-number">9.2.</span> <span class="toc-text">Signal()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Broadcast"><span class="toc-number">9.3.</span> <span class="toc-text">Broadcast()</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#sync-Map"><span class="toc-number">10.</span> <span class="toc-text">sync.Map</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#sync-Map-%E7%9A%84%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0"><span class="toc-number">10.1.</span> <span class="toc-text">sync.Map 的底层实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Store"><span class="toc-number">10.2.</span> <span class="toc-text">Store()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Load"><span class="toc-number">10.3.</span> <span class="toc-text">Load()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Delete"><span class="toc-number">10.4.</span> <span class="toc-text">Delete()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#LoadOrStore"><span class="toc-number">10.5.</span> <span class="toc-text">LoadOrStore()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Range"><span class="toc-number">10.6.</span> <span class="toc-text">Range()</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">11.</span> <span class="toc-text">参考</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2023/12/28/2023%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93%EF%BC%9A%E6%88%90%E9%95%BF%E3%80%81%E6%8E%A2%E7%B4%A2%E4%B8%8E%E6%B2%9F%E9%80%9A/" title="2023 年度总结：成长、探索与沟通"><img src="https://makonike-blog.oss-cn-guangzhou.aliyuncs.com/blog/2023-zongjie/title4.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="2023 年度总结：成长、探索与沟通"/></a><div class="content"><a class="title" href="/2023/12/28/2023%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93%EF%BC%9A%E6%88%90%E9%95%BF%E3%80%81%E6%8E%A2%E7%B4%A2%E4%B8%8E%E6%B2%9F%E9%80%9A/" title="2023 年度总结：成长、探索与沟通">2023 年度总结：成长、探索与沟通</a><time datetime="2023-12-28T15:17:47.000Z" title="发表于 2023-12-28 23:17:47">2023-12-28</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/09/11/Hello%E7%AE%97%E6%B3%95%E4%B9%8B%E5%8D%81%E5%A4%A7%E6%8E%92%E5%BA%8F/" title="Hello 算法之十大排序"><img src="https://makonike-blog.oss-cn-guangzhou.aliyuncs.com/blog/hellosuanfazhishidapaixv/title.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Hello 算法之十大排序"/></a><div class="content"><a class="title" href="/2023/09/11/Hello%E7%AE%97%E6%B3%95%E4%B9%8B%E5%8D%81%E5%A4%A7%E6%8E%92%E5%BA%8F/" title="Hello 算法之十大排序">Hello 算法之十大排序</a><time datetime="2023-09-11T08:31:43.000Z" title="发表于 2023-09-11 16:31:43">2023-09-11</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/08/31/%E4%B8%80%E6%96%87%E4%BA%86%E8%A7%A3Go%E8%AF%AD%E8%A8%80Context%E6%A0%87%E5%87%86%E5%BA%93/" title="一文了解 Go 语言 Context 标准库"><img src="https://makonike-blog.oss-cn-guangzhou.aliyuncs.com/blog/shenrujiedugocontext/title.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="一文了解 Go 语言 Context 标准库"/></a><div class="content"><a class="title" href="/2023/08/31/%E4%B8%80%E6%96%87%E4%BA%86%E8%A7%A3Go%E8%AF%AD%E8%A8%80Context%E6%A0%87%E5%87%86%E5%BA%93/" title="一文了解 Go 语言 Context 标准库">一文了解 Go 语言 Context 标准库</a><time datetime="2023-08-31T08:25:35.000Z" title="发表于 2023-08-31 16:25:35">2023-08-31</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/08/24/%E4%B8%80%E6%96%87%E4%BA%86%E8%A7%A3%E6%9D%83%E9%99%90%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E6%A8%A1%E5%9E%8B/" title="一文了解权限访问控制模型"><img src="https://makonike-blog.oss-cn-guangzhou.aliyuncs.com/blog/yiwenliaojiequanxianfangwenkongzhimoxing/20230824184449.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="一文了解权限访问控制模型"/></a><div class="content"><a class="title" href="/2023/08/24/%E4%B8%80%E6%96%87%E4%BA%86%E8%A7%A3%E6%9D%83%E9%99%90%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E6%A8%A1%E5%9E%8B/" title="一文了解权限访问控制模型">一文了解权限访问控制模型</a><time datetime="2023-08-24T10:37:34.000Z" title="发表于 2023-08-24 18:37:34">2023-08-24</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/07/23/%E5%88%9D%E6%8E%A2%E5%AE%B9%E5%99%A8%E7%BD%91%E7%BB%9C/" title="初探容器网络"><img src="https://makonike-blog.oss-cn-guangzhou.aliyuncs.com/blog/chutanrongqiwangluo/title.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="初探容器网络"/></a><div class="content"><a class="title" href="/2023/07/23/%E5%88%9D%E6%8E%A2%E5%AE%B9%E5%99%A8%E7%BD%91%E7%BB%9C/" title="初探容器网络">初探容器网络</a><time datetime="2023-07-23T10:44:45.000Z" title="发表于 2023-07-23 18:44:45">2023-07-23</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By 谈笑风生间</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text"><a href="https://icp.gov.moe/?keyword=20227404" target="_blank">萌ICP备20227404号</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"><script>function loadGitalk () {
-  function initGitalk () {
-    var gitalk = new Gitalk(Object.assign({
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://anyview.fun">谈笑风生间</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://anyview.fun/2023/01/29/%E4%B8%80%E6%96%87%E4%BA%86%E8%A7%A3Go%E8%AF%AD%E8%A8%80Sync%E6%A0%87%E5%87%86%E5%BA%93/">https://anyview.fun/2023/01/29/%E4%B8%80%E6%96%87%E4%BA%86%E8%A7%A3Go%E8%AF%AD%E8%A8%80Sync%E6%A0%87%E5%87%86%E5%BA%93/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://anyview.fun" target="_blank">谈笑风生间</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Go/">Go</a><a class="post-meta__tags" href="/tags/%E6%A0%87%E5%87%86%E5%BA%93/">标准库</a><a class="post-meta__tags" href="/tags/%E6%BA%90%E7%A0%81/">源码</a><a class="post-meta__tags" href="/tags/%E7%BD%91%E7%BB%9C/">网络</a><a class="post-meta__tags" href="/tags/sync/">sync</a></div><div class="post-share"><div class="social-share" data-image="https://makonike-blog.oss-cn-guangzhou.aliyuncs.com/blog/yiwenliaojiegoyuyansyncbiaozhuenku/title.jpg" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2023/02/01/%E4%B8%80%E6%96%87%E4%BA%86%E8%A7%A3%E4%B8%80%E8%87%B4%E6%80%A7%E5%93%88%E5%B8%8C/" title="一文了解一致性哈希"><img class="cover" src="https://makonike-blog.oss-cn-guangzhou.aliyuncs.com/blog/yiwenliaojieyizhixinghaxi/78296349_p0.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">一文了解一致性哈希</div></div><div class="info-2"><div class="info-item-1">对于分布式存储，在不同机器上存储不同对象的数据，我们通过使用哈希算法来建立从数据到服务器之间的映射关系。 为什么需要一致性哈希 使用简单哈希算法的例子就是m = hash(o) mod n，其中 o 为对象，n 为机器数量，得到的 m 为机器编号，hash()为选用的哈希函数。 考虑以下场景： 3 个机器节点，有 10 个数据哈希值为 1，2，3…10。使用的哈希算法为m = hash(o) mod 3，其中机器 0 上保存的数据有 3,6,9，机器 1 上保存的数据有 1,4,7,10，机器 2 上的数据保存的是 2,5,8。 当增加一台机器后，n=4，此时通过哈希算法索引数据所在节点编号时会发生变化，如数据 4 会保存的机器是编号 0 而不再是 1，所以数据也需要根据集群节点的变化而迁移。当集群中数据量较大时，使用这种简单哈希函数所导致的迁移带来的开销将是集群节点难以承担的，在分布式存储系统中，这意味着如果想要增加一台机器时，就要停下服务，等待所有文件重新分布一次才能对外重新提供服务，而一台机器掉线时，尽管只掉了一部分数据，但所有数据访问路由都会出现问题，导致整个服务无法平滑...</div></div></div></a><a class="pagination-related" href="/2023/01/12/%E4%B8%80%E6%96%87%E4%BA%86%E8%A7%A3Go%E8%AF%AD%E8%A8%80HTTP%E6%A0%87%E5%87%86%E5%BA%93/" title="一文了解 Go 语言 HTTP 标准库"><img class="cover" src="https://makonike-blog.oss-cn-guangzhou.aliyuncs.com/blog/yiwenliaojiegoyuyanhttpbiaozhuenku/title.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">一文了解 Go 语言 HTTP 标准库</div></div><div class="info-2"><div class="info-item-1">基于 HTTP 构建的服务标准模型包括客户端Client 和服务端Server。HTTP 请求从客户端发出，服务端接收到请求后进行处理，然后响应返回给客户端。因此 HTTP 服务器的工作就在于如何接受来自客户端的请求，并向客户端返回响应。典型的 HTTP 服务如下图：  Client 以下是一个简单示例，在例子中，我们通过 http 标准库向给定的 url：http://httpbin.org/get发送了一个 Get 请求，请求参数为 name=makonike。 1234567891011121314151617package mainimport (	&quot;fmt&quot;	&quot;io&quot;	&quot;net/http&quot;)func main() &#123;	resp, err := http.Get(&quot;http://httpbin.org/get?name=makonike&quot;)	if err != nil &#123;		return	&#125;	defer resp.Body.Close()	body, _ := i...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2023/01/12/%E4%B8%80%E6%96%87%E4%BA%86%E8%A7%A3Go%E8%AF%AD%E8%A8%80HTTP%E6%A0%87%E5%87%86%E5%BA%93/" title="一文了解 Go 语言 HTTP 标准库"><img class="cover" src="https://makonike-blog.oss-cn-guangzhou.aliyuncs.com/blog/yiwenliaojiegoyuyanhttpbiaozhuenku/title.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2023-01-12</div><div class="info-item-2">一文了解 Go 语言 HTTP 标准库</div></div><div class="info-2"><div class="info-item-1">基于 HTTP 构建的服务标准模型包括客户端Client 和服务端Server。HTTP 请求从客户端发出，服务端接收到请求后进行处理，然后响应返回给客户端。因此 HTTP 服务器的工作就在于如何接受来自客户端的请求，并向客户端返回响应。典型的 HTTP 服务如下图：  Client 以下是一个简单示例，在例子中，我们通过 http 标准库向给定的 url：http://httpbin.org/get发送了一个 Get 请求，请求参数为 name=makonike。 1234567891011121314151617package mainimport (	&quot;fmt&quot;	&quot;io&quot;	&quot;net/http&quot;)func main() &#123;	resp, err := http.Get(&quot;http://httpbin.org/get?name=makonike&quot;)	if err != nil &#123;		return	&#125;	defer resp.Body.Close()	body, _ := i...</div></div></div></a><a class="pagination-related" href="/2023/08/31/%E4%B8%80%E6%96%87%E4%BA%86%E8%A7%A3Go%E8%AF%AD%E8%A8%80Context%E6%A0%87%E5%87%86%E5%BA%93/" title="一文了解 Go 语言 Context 标准库"><img class="cover" src="https://makonike-blog.oss-cn-guangzhou.aliyuncs.com/blog/shenrujiedugocontext/title.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-31</div><div class="info-item-2">一文了解 Go 语言 Context 标准库</div></div><div class="info-2"><div class="info-item-1">笔者所用 Go 版本为：go1.20.5 linux/amd64 context 意为上下文，用于管理子 goroutine 的生命周期，或维护一条调用链路中的上下文，广泛用于微服务、以及各类标准包如 http、sql 中。context 的源代码非常的少且简洁，接下来笔者直接对 context 的源代码进行分析，并对 context 的应用场景做简单的介绍。 一个接口、四种实现、六个函数 Context 定义是一个接口，具体的实现有四种：emptyCtx、cancelCtx、timerCtx 以及 valueCtx。context 包对外暴露的方法主要有六个（实际上更多一点）：Background()、TODO()、WithValue()、WithCancel()、WithDeadline() 与 WithTimeout()。 可以简单看出，Context 四个方法决定了 Context 的几个用途：设置 deadline、设置取消信号，以及携带一些值。 12345678910// A Context carries a deadline, a cancellation sig...</div></div></div></a><a class="pagination-related" href="/2023/05/06/%E4%B8%80%E6%96%87%E4%BA%86%E8%A7%A3WebSocket%E5%8D%8F%E8%AE%AE/" title="一文了解 WebSocket 协议"><img class="cover" src="https://makonike-blog.oss-cn-guangzhou.aliyuncs.com/blog/yiwenliaojiewebsocket/title.png" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2023-05-06</div><div class="info-item-2">一文了解 WebSocket 协议</div></div><div class="info-2"><div class="info-item-1">为什么需要 WebSocket 短轮训-&gt;长轮训-&gt;基于流-&gt;WebSocket  TCP 长连接就是 WebSocket 的基础，但是如果是 HTTP 的长连接，本质上还是 Request/Response 消息对，仍然会造成资源的浪费、实时性不强等问题 特点   建立在 TCP 之上   与 HTTP 有良好兼容性   没有同源限制，客户端可以与任意服务器通信   标识符是ws/wss，服务器地址是URL   可以发送文本和二进制数据   数据格式轻量，性能开销小，通信高效。连接创建后，ws 客户端、服务端进行数据交换时，协议控制的数据包头部较小。在不包含头部的情况下，服务端到客户端的包头只有 2~10 字节（取决于数据包长度），客户端到服务端的的话，需要加上额外的 4 字节的掩码。而 HTTP 协议每次通信都需要携带完整的头部；   建立连接 WebSocket 的目的是取代 HTTP 在双向通信的场景下使用，所以有些实现方式也是基于 HTTP 的（比如默认端口为 80/443），有向下兼容的意思。 客户端发起协议升级 123456789GET / HTT...</div></div></div></a><a class="pagination-related" href="/2023/07/23/%E5%88%9D%E6%8E%A2%E5%AE%B9%E5%99%A8%E7%BD%91%E7%BB%9C/" title="初探容器网络"><img class="cover" src="https://makonike-blog.oss-cn-guangzhou.aliyuncs.com/blog/chutanrongqiwangluo/title.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2023-07-23</div><div class="info-item-2">初探容器网络</div></div><div class="info-2"><div class="info-item-1">演变历史 容器网络的初期阶段，容器是一种封装技术，将应用和其依赖的环境打包在一起，方便快速部署和运行。对外暴露的方式相对简单：每个容器通过对应的端口暴露，外部程序可以通过不同的端口来区分不同的容器实例和应用实例。这种方案比较直接，没有引入任何网络堆栈，因此被广大开发者采纳。但是管理起来存在一些问题，因为每个容器都至少占用宿主机的一个端口。  为了解决容器规模化部署管理方面的问题，引入了 Overlay 网络方案。在这种方案下，两台主机之间构建一个默认私有的虚拟网络，支持容器与容器之间的通信，每个容器在虚拟网络中都有一个独立的 IP 地址。当容器需要对外暴露时，通过虚拟网络连接主机端口，主机端口对外暴露，外部数据包可以通过主机端口进入虚拟网络，然后路由转发给特定的容器。这也就是 Overlay 网络方案的工作原理。显而易见，Overlay 的优势在于允许无限制地部署容器，并提供虚拟网络中的独立 IP 地址，但通信数据仍然需要通过真实物理网络基础设施传输。然而，企业较少使用 Overlay，因为一些传统的应用程序可能依赖于特定网络拓扑配置和直接的主机间通信方式，而 Overlay 网...</div></div></div></a></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="https://makonike-blog.oss-cn-guangzhou.aliyuncs.com/blog/title/avatar1.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">谈笑风生间</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">24</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">33</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Makonike"><i class="fab fa-github"></i><span>Github</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/Makonike" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:makonike@anyview.fun" target="_blank" title="Email"><i class="fas fa-envelope"></i></a><a class="social-icon" href="https://anyview.fun/atom.xml" target="_blank" title=""><i class="fas fa-rss"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">技术改变世界~</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%99%E5%9C%A8%E5%89%8D%E9%9D%A2"><span class="toc-number">1.</span> <span class="toc-text">写在前面</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#sync-WaitGroup"><span class="toc-number">2.</span> <span class="toc-text">sync.WaitGroup</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#WaitGroup"><span class="toc-number">2.1.</span> <span class="toc-text">WaitGroup</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Wait"><span class="toc-number">2.2.</span> <span class="toc-text">Wait()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Add"><span class="toc-number">2.3.</span> <span class="toc-text">Add()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#WaitGroup-%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E6%80%BB%E7%BB%93"><span class="toc-number">2.4.</span> <span class="toc-text">WaitGroup 的实现原理总结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#sync-Pool"><span class="toc-number">3.</span> <span class="toc-text">sync.Pool</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A6%82%E6%9E%9C%E6%B2%A1%E6%9C%89-sync-Pool"><span class="toc-number">3.1.</span> <span class="toc-text">如果没有 sync.Pool</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#sync-Pool-%E7%9A%84%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0"><span class="toc-number">3.2.</span> <span class="toc-text">sync.Pool 的底层实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#poolLocal"><span class="toc-number">3.3.</span> <span class="toc-text">poolLocal</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#poolChain"><span class="toc-number">3.4.</span> <span class="toc-text">poolChain</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%8E%B7%E5%8F%96%E4%B8%80%E4%B8%AA%E5%AF%B9%E8%B1%A1-Get"><span class="toc-number">3.5.</span> <span class="toc-text">获取一个对象-Get()</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#pin"><span class="toc-number">3.5.1.</span> <span class="toc-text">pin()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#popHead"><span class="toc-number">3.5.2.</span> <span class="toc-text">popHead()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#getSlow"><span class="toc-number">3.5.3.</span> <span class="toc-text">getSlow()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#popTail"><span class="toc-number">3.5.4.</span> <span class="toc-text">popTail()</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%98%E6%94%BE%E4%B8%80%E4%B8%AA%E5%AF%B9%E8%B1%A1-Put"><span class="toc-number">3.6.</span> <span class="toc-text">存放一个对象-Put()</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#pushHead"><span class="toc-number">3.6.1.</span> <span class="toc-text">pushHead()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pack"><span class="toc-number">3.6.2.</span> <span class="toc-text">pack()</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#GC"><span class="toc-number">3.7.</span> <span class="toc-text">GC</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#sync-Mutex"><span class="toc-number">4.</span> <span class="toc-text">sync.Mutex</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Mutex-%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E6%80%BB%E7%BB%93"><span class="toc-number">4.1.</span> <span class="toc-text">Mutex 的实现原理总结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#sync-RWMutex"><span class="toc-number">5.</span> <span class="toc-text">sync.RWMutex</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Lock-%E4%B8%8E-UnLock"><span class="toc-number">5.1.</span> <span class="toc-text">Lock 与 UnLock</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RLock-%E4%B8%8E-RUnlock"><span class="toc-number">5.2.</span> <span class="toc-text">RLock 与 RUnlock</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8E-Mutex"><span class="toc-number">5.3.</span> <span class="toc-text">与 Mutex</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#sync-noCopy"><span class="toc-number">6.</span> <span class="toc-text">sync.noCopy</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#semaTable"><span class="toc-number">7.</span> <span class="toc-text">semaTable</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#sync-Once"><span class="toc-number">8.</span> <span class="toc-text">sync.Once</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#sync-Cond"><span class="toc-number">9.</span> <span class="toc-text">sync.Cond</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#sync-Cond-Wait"><span class="toc-number">9.1.</span> <span class="toc-text">sync.Cond.Wait()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Signal"><span class="toc-number">9.2.</span> <span class="toc-text">Signal()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Broadcast"><span class="toc-number">9.3.</span> <span class="toc-text">Broadcast()</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#sync-Map"><span class="toc-number">10.</span> <span class="toc-text">sync.Map</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#sync-Map-%E7%9A%84%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0"><span class="toc-number">10.1.</span> <span class="toc-text">sync.Map 的底层实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Store"><span class="toc-number">10.2.</span> <span class="toc-text">Store()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Load"><span class="toc-number">10.3.</span> <span class="toc-text">Load()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Delete"><span class="toc-number">10.4.</span> <span class="toc-text">Delete()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#LoadOrStore"><span class="toc-number">10.5.</span> <span class="toc-text">LoadOrStore()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Range"><span class="toc-number">10.6.</span> <span class="toc-text">Range()</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">11.</span> <span class="toc-text">参考</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2023/12/28/2023%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93%EF%BC%9A%E6%88%90%E9%95%BF%E3%80%81%E6%8E%A2%E7%B4%A2%E4%B8%8E%E6%B2%9F%E9%80%9A/" title="2023 年度总结：成长、探索与沟通"><img src="https://makonike-blog.oss-cn-guangzhou.aliyuncs.com/blog/2023-zongjie/title4.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="2023 年度总结：成长、探索与沟通"/></a><div class="content"><a class="title" href="/2023/12/28/2023%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93%EF%BC%9A%E6%88%90%E9%95%BF%E3%80%81%E6%8E%A2%E7%B4%A2%E4%B8%8E%E6%B2%9F%E9%80%9A/" title="2023 年度总结：成长、探索与沟通">2023 年度总结：成长、探索与沟通</a><time datetime="2023-12-28T15:17:47.000Z" title="发表于 2023-12-28 23:17:47">2023-12-28</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/09/11/Hello%E7%AE%97%E6%B3%95%E4%B9%8B%E5%8D%81%E5%A4%A7%E6%8E%92%E5%BA%8F/" title="Hello 算法之十大排序"><img src="https://makonike-blog.oss-cn-guangzhou.aliyuncs.com/blog/hellosuanfazhishidapaixv/title.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Hello 算法之十大排序"/></a><div class="content"><a class="title" href="/2023/09/11/Hello%E7%AE%97%E6%B3%95%E4%B9%8B%E5%8D%81%E5%A4%A7%E6%8E%92%E5%BA%8F/" title="Hello 算法之十大排序">Hello 算法之十大排序</a><time datetime="2023-09-11T08:31:43.000Z" title="发表于 2023-09-11 16:31:43">2023-09-11</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/08/31/%E4%B8%80%E6%96%87%E4%BA%86%E8%A7%A3Go%E8%AF%AD%E8%A8%80Context%E6%A0%87%E5%87%86%E5%BA%93/" title="一文了解 Go 语言 Context 标准库"><img src="https://makonike-blog.oss-cn-guangzhou.aliyuncs.com/blog/shenrujiedugocontext/title.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="一文了解 Go 语言 Context 标准库"/></a><div class="content"><a class="title" href="/2023/08/31/%E4%B8%80%E6%96%87%E4%BA%86%E8%A7%A3Go%E8%AF%AD%E8%A8%80Context%E6%A0%87%E5%87%86%E5%BA%93/" title="一文了解 Go 语言 Context 标准库">一文了解 Go 语言 Context 标准库</a><time datetime="2023-08-31T08:25:35.000Z" title="发表于 2023-08-31 16:25:35">2023-08-31</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/08/24/%E4%B8%80%E6%96%87%E4%BA%86%E8%A7%A3%E6%9D%83%E9%99%90%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E6%A8%A1%E5%9E%8B/" title="一文了解权限访问控制模型"><img src="https://makonike-blog.oss-cn-guangzhou.aliyuncs.com/blog/yiwenliaojiequanxianfangwenkongzhimoxing/20230824184449.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="一文了解权限访问控制模型"/></a><div class="content"><a class="title" href="/2023/08/24/%E4%B8%80%E6%96%87%E4%BA%86%E8%A7%A3%E6%9D%83%E9%99%90%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E6%A8%A1%E5%9E%8B/" title="一文了解权限访问控制模型">一文了解权限访问控制模型</a><time datetime="2023-08-24T10:37:34.000Z" title="发表于 2023-08-24 18:37:34">2023-08-24</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/07/23/%E5%88%9D%E6%8E%A2%E5%AE%B9%E5%99%A8%E7%BD%91%E7%BB%9C/" title="初探容器网络"><img src="https://makonike-blog.oss-cn-guangzhou.aliyuncs.com/blog/chutanrongqiwangluo/title.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="初探容器网络"/></a><div class="content"><a class="title" href="/2023/07/23/%E5%88%9D%E6%8E%A2%E5%AE%B9%E5%99%A8%E7%BD%91%E7%BB%9C/" title="初探容器网络">初探容器网络</a><time datetime="2023-07-23T10:44:45.000Z" title="发表于 2023-07-23 18:44:45">2023-07-23</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2020 - 2026 By 谈笑风生间</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.1</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.5-b1</a></span></div><div class="footer_custom_text"><a href="https://icp.gov.moe/?keyword=20227404" target="_blank">萌ICP备20227404号</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = {"labels":"gitalk","language":"zh-CN","perPage":10,"distractionFreeMode":false,"pagerDirection":"last","createIssueManually":true}
+
+  const commentCount = n => {
+    const isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+    if (isCommentCount) {
+      isCommentCount.textContent= n
+    }
+  }
+
+  const initGitalk = (el, path) => {
+    if (isShuoshuo) {
+      window.shuoshuoComment.destroyGitalk = () => {
+        if (el.children.length) {
+          el.innerHTML = ''
+          el.classList.add('no-comment')
+        }
+      }
+    }
+
+    const gitalk = new Gitalk({
       clientID: 'ab290a3326f66d6459f3',
       clientSecret: 'f9bba6ea9384cf5bcaadc0178dce4a1cccfa3b4a',
       repo: 'makonike.github.io',
       owner: 'Makonike',
       admin: ['Makonike'],
-      id: 'd1e4f9a36c3df9dea595bce916dfe849',
-      updateCountCallback: commentCount
-    },null))
+      updateCountCallback: commentCount,
+      ...option,
+      id: isShuoshuo ? path : (option && option.id) || 'd1e4f9a36c3df9dea595bce916dfe849'
+    })
 
     gitalk.render('gitalk-container')
   }
 
-  if (typeof Gitalk === 'function') initGitalk()
-  else {
-    getCSS('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css')
-    getScript('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js').then(initGitalk)
+  const loadGitalk = async(el, path) => {
+    if (typeof Gitalk === 'function') initGitalk(el, path)
+    else {
+      await btf.getCSS('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css')
+      await btf.getScript('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js')
+      initGitalk(el, path)
+    }
   }
-}
 
-function commentCount(n){
-  let isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
-  if (isCommentCount) {
-    isCommentCount.innerHTML= n
+  if (isShuoshuo) {
+    'Gitalk' === 'Gitalk'
+      ? window.shuoshuoComment = { loadComment: loadGitalk }
+      : window.loadOtherComment = loadGitalk
+    return
   }
-}
 
-if ('Gitalk' === 'Gitalk' || !false) {
-  if (false) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
-  else loadGitalk()
-} else {
-  function loadOtherComment () {
-    loadGitalk()
+  if ('Gitalk' === 'Gitalk' || !false) {
+    if (false) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+    else loadGitalk()
+  } else {
+    window.loadOtherComment = loadGitalk
   }
-}</script></div><script defer src="/_vercel/insights/script.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
+})()</script></div><script defer src="/_vercel/insights/script.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
